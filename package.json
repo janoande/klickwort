@@ -1,0 +1,19 @@
+{
+  "name": "klickwort",
+  "version": "1.0.0",
+  "description": "Lookup words with wiktionary by doubleclicking on them.",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production"
+  },
+  "author": "janoande",
+  "license": "ISC",
+  "dependencies": {
+    "langs": "^2.0.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}

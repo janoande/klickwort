@@ -1,0 +1,26 @@
+{
+
+    "manifest_version": 2,
+    "name": "Klickwort",
+    "version": "0.1.0",
+
+    "description": "Doubleclick on any word on a web page to bring up a wiktionary definition of the word.",
+
+    "icons": {
+        "48": "icons/border-48.png"
+    },
+
+    "permissions": [
+	"activeTab",
+	"contextMenus"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["dist/content.js"]
+        }
+    ],
+    "background": {
+	    "scripts": ["dist/background.js"]
+    }
+}
