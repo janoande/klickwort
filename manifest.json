@@ -5,6 +5,12 @@
     "version": "0.1.0",
 
     "description": "Doubleclick on any word on a web page to bring up a wiktionary definition of the word.",
+    
+    "applications": {
+        "gecko": {
+            "id": "klickwort@janoande.github.io"
+        }
+    },
 
     "icons": {
         "48": "icons/border-48.png"
