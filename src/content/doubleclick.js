@@ -1,7 +1,7 @@
 
 window.addEventListener("dblclick", notifyDoubleClick);
 
-function notifyDoubleClick(e) {
+function notifyDoubleClick() {
     browser.runtime.sendMessage({ word: window.getSelection().toString(),
                                   langcode: document.documentElement.lang });
 }
