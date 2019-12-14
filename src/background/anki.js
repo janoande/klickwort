@@ -30,9 +30,24 @@ async function ankiCheckVersion() {
         console.log("Anki-connect version", version, " !=", ankiConnectVersion, "found. WARNING");
 }
 
-function ankiCreateCard(word, sentence) {
-    console.log("Creating card for word \"" + word +"\" in sentence \"" + sentence + "\".");
+function ankiAddBasicNote(deckName, frontContent, backContent) {
+    ankiQuery("addNote", {
+        "note" : {
+           "deckName": deckName,
+           "modelName": "Basic",
+           "fields": {
+               "Front": frontContent,
+               "Back": backContent
+           },
+           "options": {
+               "allowDuplicates": false
+           },
+           "tags": [
+               "firefox-cards"
+           ]
+        } 
+    });
 }
 
 
-export { ankiCheckVersion, ankiCreateCard };
+export { ankiCheckVersion, ankiAddBasicNote };
