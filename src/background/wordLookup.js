@@ -1,6 +1,6 @@
 const langs = require('langs');
 
-function handleWordLookup({ word, langcode }) {
+function handleWordLookup(word, langcode) {
     const language = (langs.where("1", langcode) || { name: "English"}).name;
     browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
         const curTabIndex = tabs[0].index;

@@ -30,5 +30,9 @@ async function ankiCheckVersion() {
         console.log("Anki-connect version", version, " !=", ankiConnectVersion, "found. WARNING");
 }
 
+function ankiCreateCard(word, sentence) {
+    console.log("Creating card for word \"" + word +"\" in sentence \"" + sentence + "\".");
+}
 
-export { ankiCheckVersion };
+
+export { ankiCheckVersion, ankiCreateCard };
