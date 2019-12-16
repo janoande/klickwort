@@ -1,5 +1,4 @@
-
-window.addEventListener("dblclick", notifyDoubleClick);
+import { getPopup, showPopup } from './wordDefPopup.js';
 
 function extractSentence(textSelection) {
     let sentence = "";
@@ -45,10 +44,18 @@ function extractSentence(textSelection) {
 
 function notifyDoubleClick(e) {
     if (e.altKey) {
-        browser.runtime.sendMessage({
+        console.log("can we even reach the background script?");
+        let sending = browser.runtime.sendMessage({
             action: "lookup-word",
             word: window.getSelection().toString(),
             langcode: document.documentElement.lang
+        });
+        sending.then((message) => {
+            getPopup().innerHTML = message.response;
+            showPopup();
+        },
+        (error) => {
+            console.log(`Error: ${error}`);
         });
     }
     if (e.shiftKey) {
@@ -61,3 +68,5 @@ function notifyDoubleClick(e) {
         });
     }
 }
+
+export default notifyDoubleClick;

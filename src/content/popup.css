@@ -1,0 +1,16 @@
+#popupDictionaryWindow {
+    background-color: lightcyan;
+    position: fixed;
+    display: none;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    animation: popup 0.2s;
+    overflow: scroll;
+    height: 80%;
+    width: 80%;
+}
+@keyframes popup {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
