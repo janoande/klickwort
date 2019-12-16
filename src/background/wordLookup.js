@@ -1,4 +1,5 @@
 const langs = require('langs');
+import wiktionaryQuery from './wiktionary.js'; // unused
 
 function handleWordLookup(word, langcode) {
     const language = (langs.where("1", langcode) || { name: "English"}).name;

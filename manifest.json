@@ -17,7 +17,8 @@
 
     "permissions": [
 	"activeTab",
-	"contextMenus"
+	"contextMenus",
+        "https://*.wiktionary.org/w/api/*"
     ],
     "content_scripts": [
         {
@@ -26,6 +27,6 @@
         }
     ],
     "background": {
-	    "scripts": ["dist/background.js"]
+	"scripts": ["dist/background.js"]
     }
 }
