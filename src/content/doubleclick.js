@@ -44,13 +44,16 @@ function extractSentence(textSelection) {
 
 function notifyDoubleClick(e) {
     if (e.altKey) {
-        let locale = document.documentElement.lang;
         let sending = browser.runtime.sendMessage({
             action: "lookup-word",
-            word: window.getSelection().toString()
+            word: window.getSelection().toString(),
+            langcode: document.documentElement.lang
         });
         sending.then((message) => {
-            getPopup().innerHTML = message.response[locale][0].definitions.map(x => x.definition).join("<br/>");
+            let popup = getPopup();
+            popup.innerHTML = message.response;
+            popup.style.left = (e.pageX - 200) + "px";
+            popup.style.top = (e.pageY + 20) + "px";
             showPopup();
         },
         (error) => {
