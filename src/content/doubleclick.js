@@ -67,7 +67,8 @@ function notifyDoubleClick(e) {
             action: "create-anki-card",
             word: word,
             langcode: document.documentElement.lang,
-            sentence: sentence
+            sentence: sentence,
+            title: document.title
         });
     }
 }

@@ -16,9 +16,9 @@ browser.runtime.onMessage.addListener((message , sender, sendResponse) => {
     if (message.action === "create-anki-card") {
         handleWordLookup(message.word, message.langcode).then(definition => {
             ankiAddBasicNote("firefox",
-                                message.word,
-                                `${definition} <p>${message.sentence}</p>`)
-                .then(response => {
+                             message.word,
+                             `${definition} <p>${message.title}<br/>${message.sentence}</p>`)
+                .then(() => {
                     browser.notifications.create({
                         "type": "basic",
                         "title": "Lingorino -> Anki",
