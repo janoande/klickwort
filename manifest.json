@@ -1,13 +1,13 @@
 {
     "manifest_version": 2,
-    "name": "Klickwort",
+    "name": "lingorino",
     "version": "0.1.0",
 
-    "description": "Doubleclick on any word on a web page to bring up a wiktionary definition of the word.",
+    "description": "Web-extension for language learners. Includes popup dictionary and Anki card creation.",
     
     "applications": {
         "gecko": {
-            "id": "klickwort@janoande.github.io"
+            "id": "lingorino@janoande.github.io"
         }
     },
 

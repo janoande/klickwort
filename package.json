@@ -1,7 +1,5 @@
 {
-  "name": "klickwort",
-  "version": "1.0.0",
-  "description": "Lookup words with wiktionary by doubleclicking on them.",
+  "name": "lingorino",
   "main": "background.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
