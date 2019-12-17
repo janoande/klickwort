@@ -18,7 +18,7 @@
     "permissions": [
 	"activeTab",
 	"contextMenus",
-        "https://*.wiktionary.org/w/api/*"
+        "https://en.wiktionary.org/api/rest_v1/page/definition/*"
     ],
     "content_scripts": [
         {

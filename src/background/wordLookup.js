@@ -1,7 +1,7 @@
 const langs = require('langs');
 import wiktionaryQuery from './wiktionary.js';
 
-function handleWordLookup(word, langcode) {
+function handleWordLookup(word) {
     /* const language = (langs.where("1", langcode) || { name: "English"}).name;
      * browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
      *     const curTabIndex = tabs[0].index;
@@ -10,7 +10,7 @@ function handleWordLookup(word, langcode) {
      *         index: curTabIndex + 1
      *     });
      * }); */
-    return wiktionaryQuery(word, langcode, "en");
+    return wiktionaryQuery(word);
 }
 
 export default handleWordLookup;
