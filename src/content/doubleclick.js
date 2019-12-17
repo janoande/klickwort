@@ -66,6 +66,7 @@ function notifyDoubleClick(e) {
         browser.runtime.sendMessage({
             action: "create-anki-card",
             word: word,
+            langcode: document.documentElement.lang,
             sentence: sentence
         });
     }
