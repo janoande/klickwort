@@ -2,24 +2,27 @@ const url = "http://localhost:8765/";
 const ankiConnectVersion = 6;
 
 async function ankiQuery(action, params={}) {
-    try {
-        const query = {
-            "action" : action,
-            "version" : ankiConnectVersion,
-            "params": params
-        };
-        const response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify(query),
-        });
-        const json = await response.json();
-        if (json.error)
-            throw json.error;
-        return json.result;
-    }
-    catch (error) {
-        console.error("Error:", error);
-    }
+    const query = {
+        "action" : action,
+        "version" : ankiConnectVersion,
+        "params": params
+    };
+
+    return fetch(url, {
+        method: "POST",
+        body: JSON.stringify(query),
+    }).then((response) => {
+        if (response.ok) {
+            return response.json().then(json => {
+                if (json.error) throw new Error(json.error);
+                return json.result;
+            }).catch(error => {
+                return Promise.reject(new Error(error.message));
+            });
+        }
+    }).catch(error => {
+        return Promise.reject(new Error(error.message));
+    });
 }
 
 async function ankiCheckVersion() {
@@ -31,7 +34,7 @@ async function ankiCheckVersion() {
 }
 
 function ankiAddBasicNote(deckName, frontContent, backContent) {
-    ankiQuery("addNote", {
+    return ankiQuery("addNote", {
         "note" : {
            "deckName": deckName,
            "modelName": "Basic",

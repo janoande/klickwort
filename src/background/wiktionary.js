@@ -10,7 +10,7 @@ async function wiktionaryQuery(word) {
         return json;
     }
     catch (error) {
-        console.error("Wiktionary error:", error);
+        throw new Error(`Definition not found for ${word}.`);
     }
 }
 
