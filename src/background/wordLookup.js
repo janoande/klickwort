@@ -14,7 +14,11 @@ async function handleWordLookup(word, langcode) {
      *         index: curTabIndex + 1
      *     });
      * }); */
-    return formatWordDefinition(await wiktionaryQuery(word), langcode);
+    let wordDefinition = await wiktionaryQuery(word);
+    if (!wordDefinition || wordDefinition.detail === "Page or revision not found.") {
+        return null;
+    }
+    return formatWordDefinition(wordDefinition, langcode);
 }
 
 export default handleWordLookup;
