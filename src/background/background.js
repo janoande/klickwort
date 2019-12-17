@@ -19,20 +19,11 @@ browser.runtime.onMessage.addListener((message , sender, sendResponse) => {
                                 message.word,
                                 `${definition} <p>${message.sentence}</p>`)
                 .then(response => {
-                    if (response.error) {
-                        browser.notifications.create({
-                            "type": "basic",
-                            "title": "ERROR: Lingorino -> Anki",
-                            "message": response.error
-                        });
-                    }
-                    else {
-                        browser.notifications.create({
-                            "type": "basic",
-                            "title": "Lingorino -> Anki",
-                            "message": `Added "${message.word}"`
-                        });
-                    }
+                    browser.notifications.create({
+                        "type": "basic",
+                        "title": "Lingorino -> Anki",
+                        "message": `Added "${message.word}"`
+                    });
                 }).catch(error => {
                     browser.notifications.create({
                         "type": "basic",
@@ -44,8 +35,8 @@ browser.runtime.onMessage.addListener((message , sender, sendResponse) => {
         error => {
             browser.notifications.create({
                 "type": "basic",
-                "title": "ERROR: Lingorino -> Anki",
-                "message": error.message
+                "title": "Lingorino",
+                "message": `Error: ${error.message}`
             });
         });
     }
