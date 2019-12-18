@@ -1,13 +1,13 @@
 {
-  "name": "lingorino",
-  "main": "background.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode=production",
-    "package": "npm run build && web-ext build --overwrite-dest"
+    "private": true,
+    "scripts": {
+        "build": "webpack --mode=production",
+        "package": "npm run build && web-ext build --overwrite-dest",
+        "webext": "web-ext run --verbose",
+        "lint": "npx eslint src"
   },
   "author": "janoande",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "langs": "^2.0.0"
   },
