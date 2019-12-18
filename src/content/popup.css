@@ -16,3 +16,16 @@
     from { opacity: 0 }
     to { opacity: 1 }
 }
+
+#popupDictSpinner {
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid lightgrey;
+    border-top-color: black;
+    border-radius: 50%;
+    animation: spinner 800ms linear infinite;
+}
+@keyframes spinner {
+    to { transform: rotate(360deg); }
+}

@@ -33,6 +33,10 @@ function hidePopup() {
     getPopup().style.display = "none";
 }
 
+function showPopupSpinner() {
+    setPopupContent("<div id=\"popupDictSpinner\"></div>");
+}
+
 function togglePopup() {
     let popup = getPopup();
     if (popup.style.display === "block")
@@ -41,4 +45,4 @@ function togglePopup() {
         popup.style.display = "block";
 }
 
-export { createPopupElement, getPopup, setPopupXRelativeMouse, setPopupYRelativeMouse, setPopupContent, togglePopup, showPopup, hidePopup };
+export { createPopupElement, getPopup, setPopupXRelativeMouse, setPopupYRelativeMouse, setPopupContent, showPopupSpinner, togglePopup, showPopup, hidePopup };
