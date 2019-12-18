@@ -1,4 +1,4 @@
-import { getPopup, showPopup } from './wordDefPopup.js';
+import { setPopupXRelativeMouse, setPopupYRelativeMouse, setPopupContent, showPopup } from './wordDefPopup.js';
 
 function extractSentence(textSelection) {
     let sentence = "";
@@ -50,11 +50,9 @@ function notifyDoubleClick(e) {
             langcode: document.documentElement.lang
         });
         sending.then((message) => {
-            let clientWidth = document.documentElement.clientWidth;
-            let popup = getPopup();
-            popup.innerHTML = message.response;
-            popup.style.left = Math.max(Math.min((e.pageX - 200), clientWidth - 400), 0) + "px";
-            popup.style.top = (e.pageY + 20) + "px";
+            setPopupXRelativeMouse(e.pageX);
+            setPopupYRelativeMouse(e.pageY);
+            setPopupContent(message.response);
             showPopup();
         },
         (error) => {

@@ -10,7 +10,22 @@ function createPopupElement() {
 function getPopup() {
     return document.getElementById("popupDictionaryWindow");
 }
-
+function setPopupXRelativeMouse(mouseX) {
+    const clientWidth = document.documentElement.clientWidth;
+    const style = getComputedStyle(getPopup());
+    const widthRules = ["width", "paddingLeft", "paddingRight", "borderLeftWidth", "borderRightWidth"];
+    let popupWidth = widthRules.reduce((acc, cur) => {
+        return acc + parseFloat(style[cur]);
+    }, 0);
+    getPopup().style.left = Math.max(Math.min((mouseX - popupWidth/2), clientWidth - popupWidth), 0) + "px";
+}
+function setPopupYRelativeMouse(mouseY) {
+    const offset = 20;
+    getPopup().style.top = (mouseY + offset) + "px";
+}
+function setPopupContent(content) {
+    getPopup().innerHTML = content;
+}
 function showPopup() {
     getPopup().style.display = "block";
 }
@@ -26,4 +41,4 @@ function togglePopup() {
         popup.style.display = "block";
 }
 
-export { createPopupElement, getPopup, togglePopup, showPopup, hidePopup };
+export { createPopupElement, getPopup, setPopupXRelativeMouse, setPopupYRelativeMouse, setPopupContent, togglePopup, showPopup, hidePopup };
