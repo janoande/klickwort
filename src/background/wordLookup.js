@@ -6,8 +6,8 @@ function formatWordDefinition(wikiWord, langcode) {
 
 async function handleWordLookup(word, langcode) {
     let wordDefinition = await wiktionaryQuery(word);
-    if (!wordDefinition || wordDefinition.detail === "Page or revision not found.") {
-        return null;
+    if (!wordDefinition || !wordDefinition[langcode] || wordDefinition.detail === "Page or revision not found.") {
+        throw new Error(`Definition not found for "${word}".`);
     }
     return formatWordDefinition(wordDefinition, langcode);
 }

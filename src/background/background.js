@@ -9,8 +9,10 @@ browser.contextMenus.onClicked.addListener(handleSelectionLookup);
 browser.runtime.onMessage.addListener((message , sender, sendResponse) => {
     console.log("background got runtime message");
     if (message.action === "lookup-word") {
-        handleWordLookup(message.word, message.langcode).then(data => {
-            sendResponse({ response: data || "No definition found." });
+        handleWordLookup(message.word, message.langcode).then(definition => {
+            sendResponse({ response: definition });
+        }).catch(error => {
+            sendResponse({ response: error.message });
         });
         return true; // tell content script to wait for word lookup to respond
     }
