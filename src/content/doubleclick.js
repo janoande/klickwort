@@ -50,9 +50,10 @@ function notifyDoubleClick(e) {
             langcode: document.documentElement.lang
         });
         sending.then((message) => {
+            let clientWidth = document.documentElement.clientWidth;
             let popup = getPopup();
             popup.innerHTML = message.response;
-            popup.style.left = (e.pageX - 200) + "px";
+            popup.style.left = Math.max(Math.min((e.pageX - 200), clientWidth - 400), 0) + "px";
             popup.style.top = (e.pageY + 20) + "px";
             showPopup();
         },

@@ -1,17 +1,19 @@
 #popupDictionaryWindow {
     background-color: white;
-    border: 1px solid grey;
-    box-shadow: 0px 1px 4px rgba(0,0,0,.5);
+    --border-size: 1px;
+    border: var(--border-size) solid grey;
+    border-radius: 5px;
+    box-shadow: 0px 1px 5px rgba(0,0,0,.4);
     position: absolute;
     display: none;
     z-index: 1;
     left: 0;
     top: 0;
     animation: popup 0.3s;
-    overflow: auto;
-    height: 200px;
-    width: 400px;
-    padding: 8px;
+    --popup-width: 400px;
+    --padding-width: 16px;
+    width: calc(var(--popup-width) - var(--padding-width)*2 - var(--border-size)*2);
+    padding: 8px var(--padding-width);
 }
 @keyframes popup {
     from { opacity: 0 }
