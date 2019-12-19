@@ -1,4 +1,4 @@
-import { setPopupXRelativeMouse, setPopupYRelativeMouse, setPopupContent, showPopup, showPopupSpinner } from './wordDefPopup.js';
+import * as PopupDictionary from './wordDefPopup.js';
 
 function extractSentence(textSelection) {
     let sentence = "";
@@ -44,20 +44,11 @@ function extractSentence(textSelection) {
 
 function notifyDoubleClick(e) {
     if (e.altKey) {
-        setPopupXRelativeMouse(e.pageX);
-        setPopupYRelativeMouse(e.pageY);
-        showPopupSpinner();
-        showPopup();
-        browser.runtime.sendMessage({
-            action: "lookup-word",
-            word: window.getSelection().toString(),
-            langcode: document.documentElement.lang
-        }).then((message) => {
-            setPopupContent(message.response);
-        },
-        (error) => {
-            setPopupContent(`Error: ${error}`);
-        });
+        PopupDictionary.setPositionRelMouse(e.pageX, e.pageY)
+        PopupDictionary.setWord(window.getSelection().toString())
+        PopupDictionary.setLanguage(document.documentElement.lang)
+        PopupDictionary.getDefinition()
+        PopupDictionary.show();
     }
     if (e.shiftKey) {
         const word = window.getSelection().toString();
