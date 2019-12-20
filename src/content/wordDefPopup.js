@@ -71,9 +71,7 @@ function fixPopupLinks() {
             setWord(word);
             setLanguage(locale);
             getDefinition();
-            show();
         };
-        elem.href = "#";
     });
 }
 function setPopupContent(content) {

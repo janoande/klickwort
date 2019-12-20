@@ -1,7 +1,14 @@
 import wiktionaryQuery from './wiktionary.js';
 
 function formatWordDefinition(wikiWord, langcode) {
-    return wikiWord[langcode][0].definitions.map(x => x.definition).join("<br/>");
+    let definitions = wikiWord[langcode][0].definitions;
+    if (definitions.length < 2)
+        return definitions[0].definition;
+    return '<ul>' +
+        definitions.map(x => {
+            return `<li>${x.definition}</li>`;
+        }).join("")
+        + '</ul>';
 }
 
 async function handleWordLookup(word, langcode) {
