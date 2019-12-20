@@ -86,7 +86,7 @@ function hide() {
     getPopup().style.display = "none";
 }
 function hideOnOutsideClick(e) {
-    if (!getPopup().contains(e.target))
+    if (!getPopup().contains(e.target) && document.body.contains(e.target))
         hide();
 }
 
