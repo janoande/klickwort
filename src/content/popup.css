@@ -16,10 +16,27 @@
     from { opacity: 0 }
     to { opacity: 1 }
 }
+#popupDictionaryWindow button {
+    float: right;
+    padding:0.3em 1em;
+    border-radius: 1em;
+    color:#fff;
+    font-weight: bold;
+    background-color: #4e9af1;
+    border: 0px;
+}
+#popupDictionaryWindow button:hover{
+    background-color: #4095c6;
+    cursor: pointer;
+}
+#popupDictionaryWindowText {
+    display: inline;
+}
 
 #popupDictSpinner {
     width: 20px;
     height: 20px;
+    margin: auto;
     box-sizing: border-box;
     border: 2px solid lightgrey;
     border-top-color: black;
