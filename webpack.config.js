@@ -8,6 +8,19 @@ const config = {
         content: path.join(src, 'content', 'content.js'),
         background: path.join(src, 'background', 'background.js')
     },
+    devtool: 'inline-source-map',
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    resolve: {
+        extensions: [ '.tsx', '.ts', '.js' ],
+    },
     output: {
         filename: '[name].js',
         path: dist
