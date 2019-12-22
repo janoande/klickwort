@@ -1,5 +1,5 @@
-import * as PopupDictionary from './wordDefPopup.js';
-import notifyDoubleClick from './doubleclick.js';
+import * as PopupDictionary from './wordDefPopup';
+import notifyDoubleClick from './doubleclick';
 
 window.addEventListener('click', PopupDictionary.hideOnOutsideClick);
 window.addEventListener('dblclick', notifyDoubleClick);

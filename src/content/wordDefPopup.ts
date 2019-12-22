@@ -19,10 +19,10 @@ function create() {
     document.body.appendChild(popupDiv);
 }
 
-function setWord(newWord) {
+function setWord(newWord: string) {
     word = newWord;
 }
-function setLanguage(newLanguage) {
+function setLanguage(newLanguage: string) {
     language = newLanguage;
 }
 
@@ -38,31 +38,36 @@ function getDefinition() {
     }).then((message) => {
         setPopupContent(message.response);
     },
-    (error) => {
-        setPopupContent(`Error: ${error}`);
-    });
+        (error) => {
+            setPopupContent(`Error: ${error}`);
+        });
 }
 
 function getPopup() {
     return document.getElementById("popupDictionaryWindow");
 }
-function setPositionRelMouse(mouseX, mouseY) {
+function setPositionRelMouse(mouseX: number, mouseY: number) {
+    let popup = getPopup();
+    if (popup == null) return;
     // Y coord
     const offset = 20;
-    getPopup().style.top = (mouseY + offset) + "px";
-    
+    popup.style.top = (mouseY + offset) + "px";
+
     // X coord
     const clientWidth = document.documentElement.clientWidth;
-    const style = getComputedStyle(getPopup());
+    const style = getComputedStyle(popup);
     const widthRules = ["width", "paddingLeft", "paddingRight", "borderLeftWidth", "borderRightWidth"];
-    let popupWidth = widthRules.reduce((acc, cur) => {
+    let popupWidth = widthRules.reduce((acc: number, cur: string) => {
+        // @ts-ignore
         return acc + parseFloat(style[cur]);
     }, 0);
-    getPopup().style.left = Math.max(Math.min((mouseX - popupWidth/2), clientWidth - popupWidth), 0) + "px";
+    popup.style.left = Math.max(Math.min((mouseX - popupWidth / 2), clientWidth - popupWidth), 0) + "px";
 }
 
 function fixPopupLinks() {
-    getPopup().querySelectorAll("a").forEach(elem => {
+    let popup = getPopup();
+    if (popup == null) return;
+    popup.querySelectorAll("a").forEach(elem => {
         const url = new URL(elem.href);
 
         const langname = url.href.split("#")[1];
@@ -83,16 +88,17 @@ function fixPopupLinks() {
     });
 }
 
-function extractSentence(textSelection) {
+function extractSentence(textSelection: Selection) {
     let sentence = "";
     const separators = /[.!?]/;
 
     // first sentence half
     let separatorFound = false;
     let node = textSelection.anchorNode;
-    let text = node.textContent.slice(0, window.getSelection().anchorOffset);
+    if (node == null || node.textContent == null) return "";
+    let text = node.textContent.slice(0, window.getSelection()!.anchorOffset);
     while (!separatorFound) {
-        for (const char of text.split('').reverse('').join('')) {
+        for (const char of text.split('').reverse().join('')) {
             sentence = char + sentence;
             if (char.match(separators)) {
                 sentence = sentence.slice(2);
@@ -103,12 +109,14 @@ function extractSentence(textSelection) {
         node = node.previousSibling;
         if (!node)
             break;
-        text = node.textContent;
+        if (node.textContent)
+            text = node.textContent;
     }
     // second sentence half
     separatorFound = false;
     node = textSelection.anchorNode;
-    text = node.textContent.slice(window.getSelection().anchorOffset);
+    if (node == null || node.textContent == null) return sentence;
+    text = node.textContent.slice(window.getSelection()!.anchorOffset);
     while (!separatorFound) {
         for (const char of text) {
             sentence = sentence + char;
@@ -120,13 +128,14 @@ function extractSentence(textSelection) {
         node = node.nextSibling;
         if (!node)
             break;
-        text = node.textContent;
+        if (node.textContent)
+            text = node.textContent;
     }
     return sentence;
 }
 
 function addToAnki() {
-    const sentence = extractSentence(window.getSelection());
+    const sentence = extractSentence(window.getSelection()!);
     browser.runtime.sendMessage({
         action: "create-anki-card",
         word: word,
@@ -135,20 +144,31 @@ function addToAnki() {
         title: document.title
     });
 }
-function setPopupContent(content) {
-    document.getElementById("popupDictionaryWindowText").innerHTML = content;
-    fixPopupLinks();
+function setPopupContent(content: string) {
+    let popupText = document.getElementById("popupDictionaryWindowText");
+    if (popupText) {
+        popupText.innerHTML = content;
+        fixPopupLinks();
+    }
 }
 
 function show() {
-    getPopup().style.display = "block";
+    let popup = getPopup();
+    if (popup)
+        popup.style.display = "block";
 }
 function hide() {
-    getPopup().style.display = "none";
+    let popup = getPopup();
+    if (popup)
+        popup.style.display = "none";
 }
-function hideOnOutsideClick(e) {
-    if (!getPopup().contains(e.target) && document.body.contains(e.target))
-        hide();
+function hideOnOutsideClick(e: Event) {
+    let popup = getPopup();
+    if (popup && e) {
+        let target = e.target;
+        if (target instanceof Element && !popup.contains(target) && document.body.contains(target))
+            hide();
+    }
 }
 
-export { create, setPositionRelMouse, spin, setWord, setLanguage, getDefinition, show, hide, hideOnOutsideClick  };
+export { create, setPositionRelMouse, spin, setWord, setLanguage, getDefinition, show, hide, hideOnOutsideClick };
