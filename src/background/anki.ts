@@ -2,10 +2,10 @@ class Anki {
     static get url() { return "http://localhost:8765/"; }
     static get version() { return 6; }
 
-    static query(action, params={}) {
+    static query(action: string, params = {}) {
         const query = {
-            "action" : action,
-            "version" : this.version,
+            "action": action,
+            "version": this.version,
             "params": params
         };
         return fetch(this.url, {
@@ -35,71 +35,95 @@ class Anki {
 }
 
 class AnkiCard {
-    push(deckName, modelName, fields) {
+    push(deckName: string, modelName: string, fields: any) {
         return Anki.query("addNote", {
-            "note" : {
-            "deckName": deckName,
-            "modelName": modelName,
-            "fields": fields,
-            "options": {
-                "allowDuplicates": false
-            },
-            "tags": [
-                "firefox-cards"
-            ]
-            } 
+            "note": {
+                "deckName": deckName,
+                "modelName": modelName,
+                "fields": fields,
+                "options": {
+                    "allowDuplicates": false
+                },
+                "tags": [
+                    "firefox-cards"
+                ]
+            }
         });
     }
 }
 
 class AnkiBasicCard extends AnkiCard {
-    word(word) {
-        this._word = word;
+    word: string;
+    sentence: string;
+    definition: string;
+    title: string;
+
+    constructor() {
+        super();
+        this.word = "";
+        this.sentence = "";
+        this.definition = "";
+        this.title = "";
+    }
+
+    setWord(word: string) {
+        this.word = word;
         return this;
     }
-    sentence(sentence) {
-        this._sentence = sentence;
+    setSentence(sentence: string) {
+        this.sentence = sentence;
         return this;
     }
-    definition(definition) {
-        this._definition = definition;
+    setDefinition(definition: string) {
+        this.definition = definition;
         return this;
     }
-    title(title) {
-        this._title = title;
+    setTitle(title: string) {
+        this.title = title;
         return this;
     }
     formatCard() {
         return {
-            "Front": this._word,
-            "Back": `${this._definition} <p>${this._title}<br/>${this._sentence}</p>`
+            "Front": this.word,
+            "Back": `${this.definition} <p>${this.title}<br/>${this.sentence}</p>`
         };
     }
-    push(deckName) {
+    push(deckName: string) {
         return super.push(deckName, "Basic", this.formatCard())
     }
 }
 
 class AnkiClozeCard extends AnkiCard {
-    word(word) {
-        this._word = word;
+    word: string;
+    sentence: string;
+    extra: string;
+
+    constructor() {
+        super();
+        this.word = "";
+        this.sentence = "";
+        this.extra = "";
+    }
+
+    setWord(word: string) {
+        this.word = word;
         return this;
     }
-    sentence(sentence) {
-        this._sentence = sentence;
+    setSentence(sentence: string) {
+        this.sentence = sentence;
         return this;
     }
-    extra(extra) {
-        this._extra = extra;
+    setExtra(extra: string) {
+        this.extra = extra;
         return this;
     }
     formatCard() {
         return {
-            "Text": this._sentence.replace(new RegExp(this._word, 'g'), `{{c1::${this._word}}}`),
-            "Extra": this._extra || ""
+            "Text": this.sentence.replace(new RegExp(this.word, 'g'), `{{c1::${this.word}}}`),
+            "Extra": this.extra || ""
         };
     }
-    push(deckName) {
+    push(deckName: string) {
         return super.push(deckName, "Cloze", this.formatCard())
     }
 }

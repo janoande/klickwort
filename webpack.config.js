@@ -6,7 +6,7 @@ const dist = path.resolve(__dirname, 'dist');
 const config = {
     entry: {
         content: path.join(src, 'content', 'content.ts'),
-        background: path.join(src, 'background', 'background.js')
+        background: path.join(src, 'background', 'background.ts')
     },
     devtool: 'inline-source-map',
     module: {

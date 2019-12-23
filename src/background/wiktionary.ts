@@ -1,5 +1,5 @@
-async function wiktionaryQuery(word) {
-    word = word.replace(/\u00AD/g,''); // remove soft hyphens
+async function wiktionaryQuery(word: string) {
+    word = word.replace(/\u00AD/g, ''); // remove soft hyphens
     word = word.replace(/ /g, "_");
     let url = "https://en.wiktionary.org/api/rest_v1/page/definition/" + encodeURIComponent(word);
     try {
