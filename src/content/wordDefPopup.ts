@@ -1,7 +1,7 @@
 const langs = require('langs');
 
-let word = "";
-let language = "";
+let _word = "";
+let _locale = "";
 
 function create() {
     let popupDiv = document.createElement("div");
@@ -19,11 +19,16 @@ function create() {
     document.body.appendChild(popupDiv);
 }
 
-function setWord(newWord: string) {
-    word = newWord;
+function setWord(word: string) {
+    _word = word;
 }
-function setLanguage(newLanguage: string) {
-    language = newLanguage;
+function setLocale(langcode: string) {
+    _locale = langcode;
+}
+function langNameToLocale(langName: string): string {
+    if (langName === "" || !langs.has("name", langName))
+        return "en";
+    return langs.where("name", langName)["1"];
 }
 
 function spin() {
@@ -33,8 +38,8 @@ function getDefinition() {
     spin();
     browser.runtime.sendMessage({
         action: "lookup-word",
-        word: word,
-        langcode: language
+        word: _word,
+        langcode: _locale
     }).then((message) => {
         setPopupContent(message.response);
     },
@@ -69,20 +74,14 @@ function fixPopupLinks() {
     if (popup == null) return;
     popup.querySelectorAll("a").forEach(elem => {
         const url = new URL(elem.href);
-
         const langname = url.href.split("#")[1];
-        let locale = "en";
-        if (langname && langs.has("name", langname)) {
-            locale = langs.where("name", langname)["1"];
-        }
-
         const path = url.pathname;
         const word = path.split("/")[path.split("/").length - 1];
         elem.onclick = (e) => {
             e.preventDefault()
             if (word === "Appendix:Glossary") return;
             setWord(word);
-            setLanguage(locale);
+            setLocale(langNameToLocale(langname));
             getDefinition();
         };
     });
@@ -138,8 +137,10 @@ function addToAnki() {
     const sentence = extractSentence(window.getSelection()!);
     browser.runtime.sendMessage({
         action: "create-anki-card",
-        word: word,
-        langcode: document.documentElement.lang,
+        word: _word,
+        langcode: _locale,
+        // NOTE: if we click on another word in the popup, then the current
+        //       sentence may not be relevant anymore
         sentence: sentence,
         title: document.title
     });
@@ -171,4 +172,4 @@ function hideOnOutsideClick(e: Event) {
     }
 }
 
-export { create, setPositionRelMouse, spin, setWord, setLanguage, getDefinition, show, hide, hideOnOutsideClick };
+export { create, setPositionRelMouse, spin, setWord, setLocale, getDefinition, show, hide, hideOnOutsideClick };
