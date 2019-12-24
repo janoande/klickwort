@@ -1,7 +1,7 @@
 import wiktionaryQuery from './wiktionary';
 
-function formatWordDefinition(wikiWord: any, langcode: string) {
-    let definitions = wikiWord[langcode][0].definitions;
+function formatWordDefinition(wikiWord: any, locale: string) {
+    let definitions = wikiWord[locale][0].definitions;
     if (definitions.length < 2)
         return definitions[0].definition;
     return '<ul>' +
@@ -11,10 +11,10 @@ function formatWordDefinition(wikiWord: any, langcode: string) {
         + '</ul>';
 }
 
-async function handleWordLookup(word: string, langcode: string) {
+async function handleWordLookup(word: string, locale: string) {
     return new Promise((resolve, reject) => {
-        wiktionaryQuery(word).then(definition => {
-            resolve(formatWordDefinition(definition, langcode));
+        wiktionaryQuery(word, locale).then(definition => {
+            resolve(formatWordDefinition(definition, locale));
         }).catch(error => {
             reject(Error(error.message));
         });
