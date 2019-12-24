@@ -133,8 +133,14 @@ function extractSentence(textSelection: Selection) {
     return sentence;
 }
 
-function addToAnki() {
+function addToAnki(): void {
     const sentence = extractSentence(window.getSelection()!);
+    let popupDefinitionTextDiv = document.getElementById("popupDictionaryWindowText");
+    if (popupDefinitionTextDiv === null) {
+        console.error("Could not find definition text in popup (is null)");
+        return;
+    }
+    let definitionText = popupDefinitionTextDiv.innerHTML;
     browser.runtime.sendMessage({
         action: "create-anki-card",
         word: _word,
@@ -142,7 +148,8 @@ function addToAnki() {
         // NOTE: if we click on another word in the popup, then the current
         //       sentence may not be relevant anymore
         sentence: sentence,
-        title: document.title
+        title: document.title,
+        definition: definitionText
     });
 }
 function setPopupContent(content: string) {

@@ -18,30 +18,21 @@ browser.runtime.onMessage.addListener(
             return true; // tell content script to wait for word lookup to respond
         }
         if (message.action === "create-anki-card") {
-            handleWordLookup(message.word, message.langcode).then(definition => {
-                new AnkiBasicCard()
-                    .setWord(message.word)
-                    .setSentence(message.sentence)
-                    .setDefinition(typeof definition === "string" ? definition : "")
-                    .setTitle(message.title)
-                    .push("firefox").then(() => {
-                        browser.notifications.create({
-                            "type": "basic",
-                            "title": "Lingorino -> Anki",
-                            "message": `Added "${message.word}"`
-                        });
-                    }).catch(error => {
-                        browser.notifications.create({
-                            "type": "basic",
-                            "title": "Lingorino -> Anki",
-                            "message": `Error: ${error.message}`
-                        });
-                    });
-            },
-                error => {
+            new AnkiBasicCard()
+                .setWord(message.word)
+                .setSentence(message.sentence)
+                .setDefinition(message.definition)
+                .setTitle(message.title)
+                .push("firefox").then(() => {
                     browser.notifications.create({
                         "type": "basic",
-                        "title": "Lingorino",
+                        "title": "Lingorino -> Anki",
+                        "message": `Added "${message.word}"`
+                    });
+                }).catch(error => {
+                    browser.notifications.create({
+                        "type": "basic",
+                        "title": "Lingorino -> Anki",
                         "message": `Error: ${error.message}`
                     });
                 });
