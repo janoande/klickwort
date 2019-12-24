@@ -1,40 +1,50 @@
-class Anki {
-    static get url() { return "http://localhost:8765/"; }
-    static get version() { return 6; }
+abstract class Anki {
 
-    static query(action: string, params = {}) {
+    private static readonly url = "http://localhost:8765/";
+    private static readonly version = 6;
+
+    private constructor() { }
+
+    static async query(action: string, params = {}) {
         const query = {
             "action": action,
             "version": this.version,
             "params": params
         };
-        return fetch(this.url, {
-            method: "POST",
-            body: JSON.stringify(query),
-        }).then((response) => {
+        try {
+            let response = await fetch(this.url, {
+                method: "POST",
+                body: JSON.stringify(query),
+            });
             if (response.ok) {
-                return response.json().then(json => {
-                    if (json.error) throw new Error(json.error);
-                    return json.result;
-                }).catch(error => {
-                    return Promise.reject(new Error(error.message));
-                });
+                let json = await response.json();
+                if (json.error) throw new Error(json.error);
+                return json.result;
             }
-        }).catch(error => {
-            return Promise.reject(new Error(error.message));
-        });
+            else {
+                throw new Error(`Network response error ${response.status}.`);
+            }
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
     }
 
     static async checkVersion() {
-        const version = await this.query("version");
-        if (version === this.version)
-            console.log("Anki-connect version", version, "found. OK");
-        else
-            console.log("Anki-connect version", version, " !=", this.version, "found. WARNING");
+        try {
+            const version = await this.query("version");
+            if (version === this.version)
+                console.log("Anki-connect version", version, "found. OK");
+            else
+                console.log("Anki-connect version", version, " !=", this.version, "found. WARNING");
+        }
+        catch (e) {
+            console.log("Anki connection error:", e.message);
+        }
     }
 }
 
-class AnkiCard {
+abstract class AnkiCard {
     push(deckName: string, modelName: string, fields: any) {
         return Anki.query("addNote", {
             "note": {
@@ -53,10 +63,10 @@ class AnkiCard {
 }
 
 class AnkiBasicCard extends AnkiCard {
-    word: string;
-    sentence: string;
-    definition: string;
-    title: string;
+    private word: string;
+    private sentence: string;
+    private definition: string;
+    private title: string;
 
     constructor() {
         super();
@@ -66,19 +76,19 @@ class AnkiBasicCard extends AnkiCard {
         this.title = "";
     }
 
-    setWord(word: string) {
+    setWord(word: string): this {
         this.word = word;
         return this;
     }
-    setSentence(sentence: string) {
+    setSentence(sentence: string): this {
         this.sentence = sentence;
         return this;
     }
-    setDefinition(definition: string) {
+    setDefinition(definition: string): this {
         this.definition = definition;
         return this;
     }
-    setTitle(title: string) {
+    setTitle(title: string): this {
         this.title = title;
         return this;
     }
@@ -88,15 +98,15 @@ class AnkiBasicCard extends AnkiCard {
             "Back": `${this.definition} <p>${this.title}<br/>${this.sentence}</p>`
         };
     }
-    push(deckName: string) {
+    push(deckName: string): Promise<any> {
         return super.push(deckName, "Basic", this.formatCard())
     }
 }
 
 class AnkiClozeCard extends AnkiCard {
-    word: string;
-    sentence: string;
-    extra: string;
+    private word: string;
+    private sentence: string;
+    private extra: string;
 
     constructor() {
         super();
@@ -105,15 +115,15 @@ class AnkiClozeCard extends AnkiCard {
         this.extra = "";
     }
 
-    setWord(word: string) {
+    setWord(word: string): this {
         this.word = word;
         return this;
     }
-    setSentence(sentence: string) {
+    setSentence(sentence: string): this {
         this.sentence = sentence;
         return this;
     }
-    setExtra(extra: string) {
+    setExtra(extra: string): this {
         this.extra = extra;
         return this;
     }
@@ -123,7 +133,7 @@ class AnkiClozeCard extends AnkiCard {
             "Extra": this.extra || ""
         };
     }
-    push(deckName: string) {
+    push(deckName: string): Promise<any> {
         return super.push(deckName, "Cloze", this.formatCard())
     }
 }
