@@ -1,12 +1,8 @@
-import * as PopupDictionary from './wordDefPopup';
+import * as PopupDictionary from './wordPopup/wordPopup';
 
 function notifyDoubleClick(e: MouseEvent) {
     if (e.altKey) {
-        PopupDictionary.setPositionRelMouse(e.pageX, e.pageY);
-        PopupDictionary.setWord(window.getSelection()!.toString());
-        PopupDictionary.setLocale(document.documentElement.lang);
-        PopupDictionary.getDefinition();
-        PopupDictionary.show();
+        PopupDictionary.handleWordClick(e);
     }
 }
 
