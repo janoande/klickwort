@@ -20,7 +20,7 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "css" : ["src/content/popup.css"],
+            "css" : ["src/content/wordPopup/wordPopup.css"],
             "js": ["dist/content.js"],
             "run_at" : "document_end"
         }

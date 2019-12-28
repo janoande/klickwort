@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "npx tsc && webpack --mode=production",
+    "dev": "webpack --mode=development",
+    "build": "webpack --mode=production",
     "package": "npm run build && web-ext build --overwrite-dest",
     "webext": "web-ext run --verbose",
     "lint": "npx eslint src"
@@ -9,7 +10,8 @@
   "author": "janoande",
   "license": "MIT",
   "dependencies": {
-    "langs": "^2.0.0"
+    "langs": "^2.0.0",
+    "preact": "^10.1.1"
   },
   "devDependencies": {
     "@types/node": "^12.12.21",
