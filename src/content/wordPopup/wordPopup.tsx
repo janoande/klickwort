@@ -1,6 +1,6 @@
 import { h, Component, createRef } from "preact";
-import { WordDefinition } from './WordDefinition';
-// import CardCreator from './CardCreator';
+import WordDefinition from './WordDefinition';
+import CardCreator from './CardCreator';
 
 type Position = {
     x: number,
@@ -14,6 +14,8 @@ interface WordPopupState {
     locale: string,
     spinning: boolean,
     isVisible: boolean,
+    createCardIsVisible: boolean,
+    wordDefinitionIsVisible: boolean,
     position: Position
 }
 
@@ -28,7 +30,9 @@ export default class WordPopup extends Component {
             sentence: "This cat has a hat.",
             locale: "en",
             spinning: false,
-            isVisible: false,
+            isVisible: true,
+            createCardIsVisible: false,
+            wordDefinitionIsVisible: true,
             position: { x: 0, y: 0 }
         };
         window.addEventListener('click', this.hideOnOutsideClick);
@@ -98,9 +102,20 @@ export default class WordPopup extends Component {
             const selectedWord = window.getSelection()!.toString();
             const locale = document.documentElement.lang;
             this.updateDefinition(selectedWord, locale);
-            this.setState({ isVisible: true });
+            this.setState({
+                isVisible: true,
+                wordDefinitionIsVisible: true,
+                createCardIsVisible: false
+            });
         }
     }
+
+    showCreateCard = () => {
+        this.setState({
+            createCardIsVisible: true,
+            wordDefinitionIsVisible: false
+        });
+    };
 
     render(_props: any, state: WordPopupState) {
         const style = {
@@ -108,15 +123,20 @@ export default class WordPopup extends Component {
             left: state.position.x + "px",
             display: state.isVisible ? "block" : "none"
         };
+        // TODO: fetch these from AnkiConnect
+        const decks = ["firefox", "German", "Dutch", "French", "Norwegian"];
+        const noteTypes = ["Basic", "Cloze", "MySpecialNote"];
         return (
             <div id="popupDictionaryWindow" ref={this.popupDictionaryWindowRef} style={style}>
-                <WordDefinition word={state.word}
+                {state.wordDefinitionIsVisible ? <WordDefinition word={state.word}
                     definition={state.definition}
                     sentence={state.sentence}
                     locale={state.locale}
                     spinning={state.spinning}
-                    updateDefinition={this.updateDefinition} />
-                {/* <CardCreator /> */}
+                    updateDefinition={this.updateDefinition}
+                    onCreateCard={this.showCreateCard} />
+                    : null}
+                {state.createCardIsVisible ? <CardCreator decks={decks} noteTypes={noteTypes} /> : null}
             </div>
         );
     }

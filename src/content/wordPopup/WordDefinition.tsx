@@ -1,31 +1,27 @@
 import { h, Component, createRef } from 'preact';
 const langs = require('langs');
 
-export interface WordDefinitionProps {
+interface WordDefinitionProps {
     word: string,
     definition: string,
     sentence: string,
     locale: string,
     spinning: boolean,
-    updateDefinition: (word: string, locale: string, sentence?: string | undefined) => void
+    updateDefinition: (word: string, locale: string, sentence?: string | undefined) => void,
+    onCreateCard: () => void
 }
 
 interface WordDefinitionState {
     isVisible: boolean
 }
 
-export class WordDefinition extends Component<WordDefinitionProps, WordDefinitionState> {
+export default class WordDefinition extends Component<WordDefinitionProps, WordDefinitionState> {
     private definitionTextRef = createRef();
 
     constructor(props: WordDefinitionProps) {
         super(props);
         this.setState({ isVisible: true });
     }
-
-    public handleClick = () => {
-        console.log("TODO: switch to card creator");
-        this.setState({ isVisible: !this.state.isVisible });
-    };
 
     componentDidUpdate(prevProps: WordDefinitionProps) {
         if (prevProps.definition !== this.props.definition) {
@@ -54,7 +50,7 @@ export class WordDefinition extends Component<WordDefinitionProps, WordDefinitio
         });
     }
 
-    render(props: WordDefinitionProps, state: WordDefinitionState) {
+    render(props: WordDefinitionProps, _state: WordDefinitionState) {
         return (
             <div>
                 <div id="popupDictionaryWindowText">
@@ -64,7 +60,7 @@ export class WordDefinition extends Component<WordDefinitionProps, WordDefinitio
                         dangerouslySetInnerHTML={{ __html: props.definition }}>
                     </span>
                 </div>
-                <button onClick={this.handleClick}>Create card</button>
+                <button onClick={props.onCreateCard}>Create card</button>
             </div>
         );
     }
