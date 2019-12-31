@@ -2,7 +2,7 @@
 
 import handleWordLookup from './wordLookup';
 import handleSelectionLookup from './selectionLookup';
-import { Anki, AnkiBasicCard } from './anki';
+import { Anki } from './anki';
 
 // @ts-ignore
 browser.contextMenus.onClicked.addListener(handleSelectionLookup);
@@ -54,16 +54,12 @@ browser.runtime.onMessage.addListener(
             return true;
         }
         else if (message.action === "create-anki-card") {
-            new AnkiBasicCard()
-                .setWord(message.word)
-                .setSentence(message.sentence)
-                .setDefinition(message.definition)
-                .setTitle(message.title)
-                .push("firefox").then(() => {
+            Anki.pushCard(message.card.deck, message.card.noteType, message.card.fields)
+                .then(() => {
                     browser.notifications.create({
                         "type": "basic",
                         "title": "Lingorino -> Anki",
-                        "message": `Added "${message.word}"`
+                        "message": `Added new ${message.card.noteType} card to deck ${message.card.deck}`
                     });
                 }).catch(error => {
                     browser.notifications.create({

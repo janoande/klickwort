@@ -30,7 +30,7 @@ export default class WordPopup extends Component {
             sentence: "This cat has a hat.",
             locale: "en",
             spinning: false,
-            isVisible: true,
+            isVisible: false,
             createCardIsVisible: false,
             wordDefinitionIsVisible: true,
             position: { x: 0, y: 0 }

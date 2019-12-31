@@ -51,8 +51,7 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
         return browser.runtime.sendMessage({ action: "anki-fetch-decks" });
     }
 
-    // Promise<{ fields: { [key: string]: string } }>
-    fetchNoteFields(noteType: string): Promise<any> {
+    fetchNoteFields(noteType: string): Promise<{ fields: string[] }> {
         return browser.runtime.sendMessage({ action: "anki-fetch-fields", modelName: noteType });
     }
 
@@ -118,18 +117,11 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
     }
 
     pushNote(cardData: CardMetaData): void {
-        // TODO: push card to Anki
         console.log("Card to push:", cardData);
-        /* browser.runtime.sendMessage({
-         *     action: "create-anki-card",
-         *     word: this.word,
-         *     langcode: this.locale,
-         *     // NOTE: if we click on another word in the popup, then the current
-         *     //       sentence may not be relevant anymore
-         *     sentence: sentence,
-         *     title: document.title,
-         *     definition: definitionText
-         * }); */
+        browser.runtime.sendMessage({
+            action: "create-anki-card",
+            card: cardData
+        });
     }
 
     collectFormData(form: EventTarget): CardMetaData {
