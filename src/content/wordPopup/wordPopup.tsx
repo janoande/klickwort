@@ -111,9 +111,16 @@ export default class WordPopup extends Component {
     }
 
     showCreateCard = () => {
-        this.setState({
-            createCardIsVisible: true,
-            wordDefinitionIsVisible: false
+        browser.runtime.sendMessage({ action: "anki-check-version" }).then(response => {
+            if (response.error) {
+                alert("Error when connecting to Anki:\n" + response.error + "\n\nPlease ensure that Anki is currently running.");
+            }
+            else {
+                this.setState({
+                    createCardIsVisible: true,
+                    wordDefinitionIsVisible: false
+                });
+            }
         });
     };
 
@@ -123,9 +130,6 @@ export default class WordPopup extends Component {
             left: state.position.x + "px",
             display: state.isVisible ? "block" : "none"
         };
-        // TODO: fetch these from AnkiConnect
-        const decks = ["firefox", "German", "Dutch", "French", "Norwegian"];
-        const noteTypes = ["Basic", "Cloze", "MySpecialNote"];
         return (
             <div id="popupDictionaryWindow" ref={this.popupDictionaryWindowRef} style={style}>
                 {state.wordDefinitionIsVisible ? <WordDefinition word={state.word}
@@ -136,7 +140,7 @@ export default class WordPopup extends Component {
                     updateDefinition={this.updateDefinition}
                     onCreateCard={this.showCreateCard} />
                     : null}
-                {state.createCardIsVisible ? <CardCreator decks={decks} noteTypes={noteTypes} /> : null}
+                {state.createCardIsVisible ? <CardCreator /> : null}
             </div>
         );
     }

@@ -1,31 +1,59 @@
 import { h, Component } from 'preact';
 
-interface CardCreatorProps {
-    decks: string[],
-    noteTypes: string[]
-}
+interface CardCreatorProps { }
 
 interface CardMetaData {
-    "deck": string,
-    "noteType": string,
-    "fields": { [key: string]: string }
+    deck: string,
+    noteType: string,
+    fields: string[]
 }
 
 interface CardCreatorState extends CardMetaData {
+    modelNames: string[],
+    decks: string[]
 }
 
 export default class CardCreator extends Component<CardCreatorProps, CardCreatorState> {
     constructor(props: CardCreatorProps) {
         super(props);
         this.setState({
-            deck: "firefox",
+            deck: "Default",
             noteType: "Basic",
-            fields: this.fetchNoteFields("Basic")
+            modelNames: ["Basic", "Cloze"],
         });
+        this.fetchDecks().then(({ decks }) => {
+            this.fetchModelNames().then(({ models }) => {
+                this.fetchNoteFields("Basic").then(({ fields }) => {
+                    console.log("got decks", decks);
+                    console.log("got models", models);
+                    this.setState({
+                        deck: "firefox",
+                        noteType: "Basic",
+                        fields: fields,
+                        modelNames: models,
+                        decks: decks
+                    });
+                });
+            });
+        });
+
         this.changeDeck = this.changeDeck.bind(this);
         this.changeNoteType = this.changeNoteType.bind(this);
         this.collectFormData = this.collectFormData.bind(this);
         this.pushNote = this.pushNote.bind(this);
+    }
+
+    fetchModelNames(): Promise<any> {
+        return browser.runtime.sendMessage({ action: "anki-fetch-model-names" });
+    }
+
+    fetchDecks(): Promise<any> {
+        return browser.runtime.sendMessage({ action: "anki-fetch-decks" });
+    }
+
+    // Promise<{ fields: { [key: string]: string } }>
+    fetchNoteFields(noteType: string): Promise<any> {
+        return browser.runtime.sendMessage({ action: "anki-fetch-fields", modelName: noteType });
     }
 
     extractSentence(textSelection: Selection): string {
@@ -78,22 +106,14 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
         this.setState({ deck: e.target.value });
     }
 
-    fetchNoteFields(noteType: string): { [key: string]: string } {
-        // TODO: fetch fields from Anki-connect
-        switch (noteType) {
-            case "Basic": return { "Front": "", "Back": "" };
-            case "Cloze": return { "Text": "", "Extra": "" };
-            case "MySpecialNote": return { "FrontText": "", "BackText": "", "FunFact": "" };
-            default: return {};
-        }
-    }
-
     changeNoteType(e: any) {
         // TODO: auto fill fields as specified by rules
         const noteType = e.target.value;
-        this.setState({
-            noteType: noteType,
-            fields: this.fetchNoteFields(noteType)
+        this.fetchNoteFields(noteType).then(({ fields }) => {
+            this.setState({
+                noteType: noteType,
+                fields: fields
+            });
         });
     }
 
@@ -113,7 +133,7 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
     }
 
     collectFormData(form: EventTarget): CardMetaData {
-        let formData: CardMetaData = { deck: "", noteType: "", fields: {} };
+        let formData: CardMetaData = { deck: "", noteType: "", fields: [] };
         // @ts-ignore
         Array.from(form).forEach(input => {
             if (input.tagName == "SELECT") {
@@ -134,26 +154,26 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
         this.pushNote(data);
     }
 
-    render(props: CardCreatorProps, state: CardCreatorState) {
+    render(_props: any, state: CardCreatorState) {
         return (
             <div>
                 <form onSubmit={this.onSubmit.bind(this)}>
                     <b>Fields:</b><br />
                     <ul>
-                        {Object.keys(state.fields).map(field =>
+                        {state.fields.map(field =>
                             <li><label>{field}:<textarea name={field} /></label></li>
                         )}
                     </ul>
                     <label>
                         Deck:
                         <select name="deck" onInput={this.changeDeck} value={state.deck}>
-                            {props.decks.map(deck => <option value={deck}>{deck}</option>)}
+                            {state.decks.map(deck => <option value={deck}>{deck}</option>)}
                         </select>
-                    </label>
+                    </label><br />
                     <label>
                         Note type:
                         <select name="noteType" onInput={this.changeNoteType} value={state.noteType}>
-                            {props.noteTypes.map(noteType => <option value={noteType}>{noteType}</option>)}
+                            {state.modelNames.map(noteType => <option value={noteType}>{noteType}</option>)}
                         </select>
                     </label>
                     <button type="submit">Send</button>

@@ -32,15 +32,29 @@ abstract class Anki {
 
     static async checkVersion() {
         try {
-            const version = await this.query("version");
-            if (version === this.version)
-                console.log("Anki-connect version", version, "found. OK");
-            else
-                console.log("Anki-connect version", version, " !=", this.version, "found. WARNING");
+            const version = { expected: this.version, got: await this.query("version") };
+            return version;
         }
         catch (e) {
-            console.log("Anki connection error:", e.message);
+            throw e;
         }
+    }
+
+    static async fetchDecks() {
+        const decks = await this.query("deckNames");
+        return decks;
+    }
+
+    static async fetchModelNames() {
+        const models = await this.query("modelNames");
+        return models;
+    }
+
+    static async fetchFields(modelName: string) {
+        const fields = await this.query("modelFieldNames", {
+            "modelName": modelName
+        });
+        return fields;
     }
 }
 
