@@ -32,20 +32,32 @@ abstract class Anki {
 
     static async checkVersion() {
         try {
-            const version = await this.query("version");
-            if (version === this.version)
-                console.log("Anki-connect version", version, "found. OK");
-            else
-                console.log("Anki-connect version", version, " !=", this.version, "found. WARNING");
+            const version = { expected: this.version, got: await this.query("version") };
+            return version;
         }
         catch (e) {
-            console.log("Anki connection error:", e.message);
+            throw e;
         }
     }
-}
 
-abstract class AnkiCard {
-    push(deckName: string, modelName: string, fields: any) {
+    static async fetchDecks() {
+        const decks = await this.query("deckNames");
+        return decks;
+    }
+
+    static async fetchModelNames() {
+        const models = await this.query("modelNames");
+        return models;
+    }
+
+    static async fetchFields(modelName: string) {
+        const fields = await this.query("modelFieldNames", {
+            "modelName": modelName
+        });
+        return fields;
+    }
+
+    static async pushCard(deckName: string, modelName: string, fields: string[], tags = []) {
         return Anki.query("addNote", {
             "note": {
                 "deckName": deckName,
@@ -54,88 +66,13 @@ abstract class AnkiCard {
                 "options": {
                     "allowDuplicates": false
                 },
-                "tags": [
-                    "firefox-cards"
-                ]
+                "tags": tags
             }
         });
     }
 }
+// TODO: may be used for rules
+//             "Back": `${this.definition} <p>${this.title}<br/>${this.sentence}</p>`
+//             "Text": this.sentence.replace(new RegExp(this.word, 'g'), `{{c1::${this.word}}}`),
 
-class AnkiBasicCard extends AnkiCard {
-    private word: string;
-    private sentence: string;
-    private definition: string;
-    private title: string;
-
-    constructor() {
-        super();
-        this.word = "";
-        this.sentence = "";
-        this.definition = "";
-        this.title = "";
-    }
-
-    setWord(word: string): this {
-        this.word = word;
-        return this;
-    }
-    setSentence(sentence: string): this {
-        this.sentence = sentence;
-        return this;
-    }
-    setDefinition(definition: string): this {
-        this.definition = definition;
-        return this;
-    }
-    setTitle(title: string): this {
-        this.title = title;
-        return this;
-    }
-    formatCard() {
-        return {
-            "Front": this.word,
-            "Back": `${this.definition} <p>${this.title}<br/>${this.sentence}</p>`
-        };
-    }
-    push(deckName: string): Promise<any> {
-        return super.push(deckName, "Basic", this.formatCard())
-    }
-}
-
-class AnkiClozeCard extends AnkiCard {
-    private word: string;
-    private sentence: string;
-    private extra: string;
-
-    constructor() {
-        super();
-        this.word = "";
-        this.sentence = "";
-        this.extra = "";
-    }
-
-    setWord(word: string): this {
-        this.word = word;
-        return this;
-    }
-    setSentence(sentence: string): this {
-        this.sentence = sentence;
-        return this;
-    }
-    setExtra(extra: string): this {
-        this.extra = extra;
-        return this;
-    }
-    formatCard() {
-        return {
-            "Text": this.sentence.replace(new RegExp(this.word, 'g'), `{{c1::${this.word}}}`),
-            "Extra": this.extra || ""
-        };
-    }
-    push(deckName: string): Promise<any> {
-        return super.push(deckName, "Cloze", this.formatCard())
-    }
-}
-
-export { Anki, AnkiBasicCard, AnkiClozeCard };
+export { Anki };
