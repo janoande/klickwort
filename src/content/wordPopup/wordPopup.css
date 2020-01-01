@@ -4,7 +4,6 @@
     border-radius: 5px;
     box-shadow: 0px 1px 5px rgba(0,0,0,.4);
     position: absolute;
-    display: none;
     z-index: 777;
     left: 10em;
     top: 10em;

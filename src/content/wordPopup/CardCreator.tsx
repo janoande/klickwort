@@ -20,12 +20,12 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
             deck: "Default",
             noteType: "Basic",
             modelNames: ["Basic", "Cloze"],
+            fields: ["Front", "Back"],
+            decks: ["Default"]
         });
         this.fetchDecks().then(({ decks }) => {
             this.fetchModelNames().then(({ models }) => {
                 this.fetchNoteFields("Basic").then(({ fields }) => {
-                    console.log("got decks", decks);
-                    console.log("got models", models);
                     this.setState({
                         deck: "firefox",
                         noteType: "Basic",

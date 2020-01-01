@@ -12,7 +12,6 @@ interface WordDefinitionProps {
 }
 
 interface WordDefinitionState {
-    isVisible: boolean
 }
 
 export default class WordDefinition extends Component<WordDefinitionProps, WordDefinitionState> {
@@ -20,7 +19,6 @@ export default class WordDefinition extends Component<WordDefinitionProps, WordD
 
     constructor(props: WordDefinitionProps) {
         super(props);
-        this.setState({ isVisible: true });
     }
 
     componentDidUpdate(prevProps: WordDefinitionProps) {

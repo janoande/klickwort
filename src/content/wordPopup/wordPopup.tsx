@@ -132,13 +132,14 @@ export default class WordPopup extends Component {
         };
         return (
             <div id="popupDictionaryWindow" ref={this.popupDictionaryWindowRef} style={style}>
-                {state.wordDefinitionIsVisible ? <WordDefinition word={state.word}
-                    definition={state.definition}
-                    sentence={state.sentence}
-                    locale={state.locale}
-                    spinning={state.spinning}
-                    updateDefinition={this.updateDefinition}
-                    onCreateCard={this.showCreateCard} />
+                {state.wordDefinitionIsVisible ?
+                    <WordDefinition word={state.word}
+                        definition={state.definition}
+                        sentence={state.sentence}
+                        locale={state.locale}
+                        spinning={state.spinning}
+                        updateDefinition={this.updateDefinition}
+                        onCreateCard={this.showCreateCard} />
                     : null}
                 {state.createCardIsVisible ? <CardCreator /> : null}
             </div>
