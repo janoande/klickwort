@@ -71,8 +71,5 @@ abstract class Anki {
         });
     }
 }
-// TODO: may be used for rules
-//             "Back": `${this.definition} <p>${this.title}<br/>${this.sentence}</p>`
-//             "Text": this.sentence.replace(new RegExp(this.word, 'g'), `{{c1::${this.word}}}`),
 
 export { Anki };

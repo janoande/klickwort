@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { getCardTemplate } from './cardTemplate';
 
 interface CardCreatorProps { }
 
