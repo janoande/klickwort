@@ -50,7 +50,7 @@ abstract class Anki {
         return models;
     }
 
-    static async fetchFields(modelName: string) {
+    static async fetchFields(modelName: string): Promise<string[]> {
         const fields = await this.query("modelFieldNames", {
             "modelName": modelName
         });

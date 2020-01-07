@@ -1,12 +1,14 @@
 import { h, Component } from 'preact';
-import { getCardTemplate } from './cardTemplate';
+import { insertFieldTemplates, Field, TemplateData } from './cardTemplate';
 
-interface CardCreatorProps { }
+interface CardCreatorProps {
+    templateData: TemplateData
+}
 
 interface CardMetaData {
     deck: string,
     noteType: string,
-    fields: string[]
+    fields: Field[]
 }
 
 interface CardCreatorState extends CardMetaData {
@@ -21,16 +23,16 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
             deck: "Default",
             noteType: "Basic",
             modelNames: ["Basic", "Cloze"],
-            fields: ["Front", "Back"],
+            fields: [{ name: "Front", value: "" }, { name: "Back", value: "" }],
             decks: ["Default"]
         });
         this.fetchDecks().then(({ decks }) => {
             this.fetchModelNames().then(({ models }) => {
-                this.fetchNoteFields("Basic").then(({ fields }) => {
+                this.fetchNoteFields("Basic").then(fields => {
                     this.setState({
                         deck: "firefox",
                         noteType: "Basic",
-                        fields: fields,
+                        fields: insertFieldTemplates("Basic", fields, this.props.templateData),
                         modelNames: models,
                         decks: decks
                     });
@@ -52,54 +54,9 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
         return browser.runtime.sendMessage({ action: "anki-fetch-decks" });
     }
 
-    fetchNoteFields(noteType: string): Promise<{ fields: string[] }> {
-        return browser.runtime.sendMessage({ action: "anki-fetch-fields", modelName: noteType });
-    }
-
-    extractSentence(textSelection: Selection): string {
-        let sentence = "";
-        const separators = /[.!?]/;
-
-        // first sentence half
-        let separatorFound = false;
-        let node = textSelection.anchorNode;
-        if (node == null || node.textContent == null) return "";
-        let text = node.textContent.slice(0, window.getSelection()!.anchorOffset);
-        while (!separatorFound) {
-            for (const char of text.split('').reverse().join('')) {
-                sentence = char + sentence;
-                if (char.match(separators)) {
-                    sentence = sentence.slice(2);
-                    separatorFound = true;
-                    break;
-                }
-            }
-            node = node.previousSibling;
-            if (!node)
-                break;
-            if (node.textContent)
-                text = node.textContent;
-        }
-        // second sentence half
-        separatorFound = false;
-        node = textSelection.anchorNode;
-        if (node == null || node.textContent == null) return sentence;
-        text = node.textContent.slice(window.getSelection()!.anchorOffset);
-        while (!separatorFound) {
-            for (const char of text) {
-                sentence = sentence + char;
-                if (char.match(separators)) {
-                    separatorFound = true;
-                    break;
-                }
-            }
-            node = node.nextSibling;
-            if (!node)
-                break;
-            if (node.textContent)
-                text = node.textContent;
-        }
-        return sentence;
+    async fetchNoteFields(noteType: string): Promise<Field[]> {
+        const { fields } = await browser.runtime.sendMessage({ action: "anki-fetch-fields", modelName: noteType });
+        return fields.map((fieldName: string) => { return { name: fieldName, value: "" } });
     }
 
     changeDeck(e: any) {
@@ -107,12 +64,12 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
     }
 
     changeNoteType(e: any) {
-        // TODO: auto fill fields as specified by rules
         const noteType = e.target.value;
-        this.fetchNoteFields(noteType).then(({ fields }) => {
+
+        this.fetchNoteFields(noteType).then(fields => {
             this.setState({
                 noteType: noteType,
-                fields: fields
+                fields: insertFieldTemplates(noteType, fields, this.props.templateData)
             });
         });
     }
@@ -154,7 +111,7 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
                     <b>Fields:</b><br />
                     <ul>
                         {state.fields.map(field =>
-                            <li><label>{field}:<textarea name={field} /></label></li>
+                            <li><label>{field.name}:<textarea name={field.name}>{field.value}</textarea></label></li>
                         )}
                     </ul>
                     <label>

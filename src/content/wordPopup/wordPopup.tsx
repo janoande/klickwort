@@ -1,6 +1,7 @@
 import { h, Component, createRef } from "preact";
 import WordDefinition from './WordDefinition';
 import CardCreator from './CardCreator';
+import { TemplateData } from './cardTemplate';
 
 type Position = {
     x: number,
@@ -11,6 +12,7 @@ interface WordPopupState {
     word: string,
     definition: string,
     sentence: string,
+    pageTitle: string,
     locale: string,
     spinning: boolean,
     isVisible: boolean,
@@ -18,6 +20,7 @@ interface WordPopupState {
     wordDefinitionIsVisible: boolean,
     position: Position
 }
+
 
 export default class WordPopup extends Component {
     private popupDictionaryWindowRef = createRef();
@@ -28,6 +31,7 @@ export default class WordPopup extends Component {
             word: "cat",
             definition: "Felis silvestris catus",
             sentence: "This cat has a hat.",
+            pageTitle: document.title,
             locale: "en",
             spinning: false,
             isVisible: false,
@@ -35,8 +39,8 @@ export default class WordPopup extends Component {
             wordDefinitionIsVisible: true,
             position: { x: 0, y: 0 }
         };
-        window.addEventListener('click', this.hideOnOutsideClick);
-        window.addEventListener('dblclick', this.handleWordClick);
+        window.addEventListener('click', (e: MouseEvent) => this.hideOnOutsideClick(e));
+        window.addEventListener('dblclick', (e: MouseEvent) => this.handleWordClick(e));
     }
 
     public setPositionRelMouse = (mouseX: number, mouseY: number): void => {
@@ -69,6 +73,53 @@ export default class WordPopup extends Component {
         }
     }
 
+    extractSentence = (textSelection: Selection): string => {
+        let sentence = "";
+        const separators = /[.!?]/;
+
+        // first sentence half
+        let separatorFound = false;
+        let node = textSelection.anchorNode;
+        if (node == null || node.textContent == null) return "";
+        let text = node.textContent.slice(0, window.getSelection()!.anchorOffset);
+        while (!separatorFound) {
+            for (const char of text.split('').reverse().join('')) {
+                sentence = char + sentence;
+                if (char.match(separators)) {
+                    sentence = sentence.slice(2);
+                    separatorFound = true;
+                    break;
+                }
+            }
+            node = node.previousSibling;
+            if (!node)
+                break;
+            if (node.textContent)
+                text = node.textContent;
+        }
+        // second sentence half
+        separatorFound = false;
+        node = textSelection.anchorNode;
+        if (node == null || node.textContent == null) return sentence;
+        text = node.textContent.slice(window.getSelection()!.anchorOffset);
+        while (!separatorFound) {
+            for (const char of text) {
+                sentence = sentence + char;
+                if (char.match(separators)) {
+                    separatorFound = true;
+                    break;
+                }
+            }
+            node = node.nextSibling;
+            if (!node)
+                break;
+            if (node.textContent)
+                text = node.textContent;
+        }
+        return sentence;
+    }
+
+
     updateDefinition = (word: string, locale: string, sentence?: string): void => {
         this.setState({ spinning: true });
         browser.runtime.sendMessage({
@@ -76,16 +127,19 @@ export default class WordPopup extends Component {
             word: word,
             langcode: locale,
         }).then((message) => {
-            this.setState({
+            let newState = {
                 word: word,
                 definition: message.response,
-                spinning: false
-            });
+                spinning: false,
+                sentence: ""
+            };
             if (sentence) {
-                this.setState({
+                newState = {
+                    ...newState,
                     sentence: sentence
-                });
+                };
             }
+            this.setState(newState);
         },
             (error) => {
                 this.setState({
@@ -99,16 +153,27 @@ export default class WordPopup extends Component {
     handleWordClick = (e: MouseEvent): void => {
         if (e.altKey) {
             this.setPositionRelMouse(e.pageX, e.pageY);
-            const selectedWord = window.getSelection()!.toString();
+            const selection = window.getSelection();
+            const selectedWord = selection!.toString();
             const locale = document.documentElement.lang;
             this.updateDefinition(selectedWord, locale);
             this.setState({
                 isVisible: true,
                 wordDefinitionIsVisible: true,
-                createCardIsVisible: false
+                createCardIsVisible: false,
+                sentence: selection ? this.extractSentence(selection) : ""
             });
         }
     }
+
+    getStateTemplateData = (state: WordPopupState): TemplateData => {
+        return {
+            word: state.word,
+            sentence: state.sentence,
+            definition: state.definition,
+            title: state.pageTitle
+        };
+    };
 
     showCreateCard = () => {
         browser.runtime.sendMessage({ action: "anki-check-version" }).then(response => {
@@ -141,7 +206,7 @@ export default class WordPopup extends Component {
                         updateDefinition={this.updateDefinition}
                         onCreateCard={this.showCreateCard} />
                     : null}
-                {state.createCardIsVisible ? <CardCreator /> : null}
+                {state.createCardIsVisible ? <CardCreator templateData={this.getStateTemplateData(state)} /> : null}
             </div>
         );
     }
