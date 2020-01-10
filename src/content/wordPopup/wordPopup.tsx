@@ -119,35 +119,33 @@ export default class WordPopup extends Component {
         return sentence;
     }
 
-
-    updateDefinition = (word: string, locale: string, sentence?: string): void => {
+    getDefinition = async (word: string, locale: string): Promise<Pick<WordPopupState, 'word' | 'definition' | 'spinning'>> => {
         this.setState({ spinning: true });
-        browser.runtime.sendMessage({
-            action: "lookup-word",
-            word: word,
-            langcode: locale,
-        }).then((message) => {
-            let newState = {
+        try {
+            const message = await browser.runtime.sendMessage({
+                action: "lookup-word",
+                word: word,
+                langcode: locale,
+            });
+            return {
                 word: word,
                 definition: message.response,
                 spinning: false,
-                sentence: ""
             };
-            if (sentence) {
-                newState = {
-                    ...newState,
-                    sentence: sentence
-                };
-            }
-            this.setState(newState);
-        },
-            (error) => {
-                this.setState({
-                    word: word,
-                    definition: `Error: ${error}`,
-                    spinning: false
-                });
-            });
+        }
+        catch (error) {
+            return {
+                word: word,
+                definition: `Error: ${error}`,
+                spinning: false
+            };
+        }
+    }
+
+    updateDefinition = (word: string, locale: string): void => {
+        this.getDefinition(word, locale).then(stateDefinition => {
+            this.setState(stateDefinition);
+        })
     }
 
     handleWordClick = (e: MouseEvent): void => {
@@ -155,13 +153,16 @@ export default class WordPopup extends Component {
             this.setPositionRelMouse(e.pageX, e.pageY);
             const selection = window.getSelection();
             const selectedWord = selection!.toString();
+            const sentence = selection ? this.extractSentence(selection) : "";
             const locale = document.documentElement.lang;
-            this.updateDefinition(selectedWord, locale);
-            this.setState({
-                isVisible: true,
-                wordDefinitionIsVisible: true,
-                createCardIsVisible: false,
-                sentence: selection ? this.extractSentence(selection) : ""
+            this.getDefinition(selectedWord, locale).then(definitionState => {
+                this.setState({
+                    ...definitionState,
+                    isVisible: true,
+                    wordDefinitionIsVisible: true,
+                    createCardIsVisible: false,
+                    sentence: sentence
+                });
             });
         }
     }
