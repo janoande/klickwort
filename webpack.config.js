@@ -16,10 +16,14 @@ const config = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            { test: /\.css$/, use: [ 
+                { loader: "style-loader" },
+                { loader: "css-loader", options: { modules: true } },
+            ] }, 
         ],
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ],
+        extensions: [ '.tsx', '.ts', '.js', '.css' ],
     },
     output: {
         filename: '[name].js',

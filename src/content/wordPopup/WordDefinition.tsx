@@ -1,5 +1,6 @@
 import { h, Component, createRef } from 'preact';
 const langs = require('langs');
+import css from './wordPopupStyle.css';
 
 interface WordDefinitionProps {
     word: string,
@@ -51,9 +52,9 @@ export default class WordDefinition extends Component<WordDefinitionProps, WordD
     render(props: WordDefinitionProps, _state: WordDefinitionState) {
         return (
             <div>
-                <div id="popupDictionaryWindowText">
+                <div id={css.popupDictionaryWindowText}>
                     Definition for <b>{props.word}</b>: <br />
-                    {props.spinning && <div id="popupDictSpinner"></div>}
+                    {props.spinning && <div id={css.popupDictSpinner}></div>}
                     <span ref={this.definitionTextRef}
                         dangerouslySetInnerHTML={{ __html: props.definition }}>
                     </span>

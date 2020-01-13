@@ -2,6 +2,7 @@ import { h, Component, createRef } from "preact";
 import WordDefinition from './WordDefinition';
 import CardCreator from './CardCreator';
 import { TemplateData } from './cardTemplate';
+import css from './wordPopupStyle.css';
 
 type Position = {
     x: number,
@@ -197,7 +198,7 @@ export default class WordPopup extends Component {
             display: state.isVisible ? "block" : "none"
         };
         return (
-            <div id="popupDictionaryWindow" ref={this.popupDictionaryWindowRef} style={style}>
+            <div id={css.popupDictionaryWindow} ref={this.popupDictionaryWindowRef} style={style}>
                 {state.wordDefinitionIsVisible ?
                     <WordDefinition word={state.word}
                         definition={state.definition}
