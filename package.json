@@ -1,10 +1,10 @@
 {
-  "private": true,
-  "scripts": {
-    "dev": "webpack --mode=development",
-    "build": "webpack --mode=production",
-    "package": "npm run build && web-ext build --overwrite-dest",
-    "webext": "web-ext run --verbose",
+    "private": true,
+    "scripts": {
+        "dev": "webpack --mode=development && cp -u manifest.json dist",
+        "build": "webpack --mode=production && cp -u manifest.json dist",
+        "package": "npm run build && web-ext build --overwrite-dest --source-dir ./dist",
+        "webext": "web-ext run --verbose --source-dir ./dist",
     "lint": "npx eslint src"
   },
   "author": "janoande",
