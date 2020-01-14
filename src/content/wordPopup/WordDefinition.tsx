@@ -1,5 +1,5 @@
 import { h, Component, createRef } from 'preact';
-const langs = require('langs');
+import * as langs from 'langs';
 import css from './wordPopupStyle.css';
 
 interface WordDefinitionProps {

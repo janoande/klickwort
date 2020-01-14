@@ -1,4 +1,4 @@
-const langs = require('langs');
+import * as langs from 'langs';
 
 // @ts-ignore
 browser.contextMenus.create({
