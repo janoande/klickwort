@@ -1,3 +1,14 @@
+function formatWordDefinition(wikiWord: any, locale: string) {
+    let definitions = wikiWord[locale][0].definitions;
+    if (definitions.length < 2)
+        return definitions[0].definition;
+    return '<ul>' +
+        definitions.map((x: any) => {
+            return `<li>${x.definition}</li>`;
+        }).join("")
+        + '</ul>';
+}
+
 async function wiktionaryQuery(word: string, locale: string) {
     word = word.replace(/\u00AD/g, ''); // remove soft hyphens
     word = word.replace(/ /g, "_");
@@ -15,4 +26,8 @@ async function wiktionaryQuery(word: string, locale: string) {
     }
 }
 
-export default wiktionaryQuery;
+async function wiktionaryQueryWordFormatted(word: string, locale: string) {
+    return formatWordDefinition(await wiktionaryQuery(word, locale), locale);
+}
+
+export { wiktionaryQuery, wiktionaryQueryWordFormatted };
