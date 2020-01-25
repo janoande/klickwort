@@ -10,8 +10,11 @@
             "id": "lingorino@janoande.github.io"
         }
     },
-
+    "options_ui": {
+        "page": "settings.html"
+    },
     "permissions": [
+        "storage",
 	"activeTab",
 	"contextMenus",
         "notifications",

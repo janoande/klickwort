@@ -24,33 +24,38 @@ browser.contextMenus.create({
 function selectionLookup(info: browser.menus.OnClickData, tab: browser.tabs.Tab) {
     if (typeof info.selectionText !== "string")
         return;
-    switch (info.menuItemId) {
-        case "google-trans-selection":
-            browser.tabs.create({
-                url: "https://translate.google.se/#view=home&op=translate&sl=auto&tl=en&text=" + encodeURIComponent(info.selectionText),
-                index: tab.index + 1
-            });
-            break;
-        case "deepl-trans-selection":
-            browser.tabs.create({
-                url: "https://www.deepl.com/translator#auto/en/" + encodeURIComponent(info.selectionText),
-                index: tab.index + 1
-            });
-            break;
-        case "wiktionary-trans-word":
-            browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-                const curTabIndex = tabs[0].index;
-                browser.tabs.detectLanguage().then(langcode => {
-                    const language = (langs.where("1", langcode) || { name: "English" }).name;
-                    if (info.selectionText == undefined) return;
+    browser.storage.sync.get("targetLanguage").then(({ targetLanguage }) => {
+        const targetLocale = langs.where("name", targetLanguage as string)["1"];
+        switch (info.menuItemId) {
+            case "google-trans-selection":
+                if (info.selectionText)
                     browser.tabs.create({
-                        url: "https://en.wiktionary.org/w/index.php?search=" + encodeURIComponent(info.selectionText) + "#" + encodeURIComponent(language),
-                        index: curTabIndex + 1
+                        url: `https://translate.google.com/#view=home&op=translate&sl=auto&tl=${targetLocale}&text=${encodeURIComponent(info.selectionText)}`,
+                        index: tab.index + 1
+                    });
+                break;
+            case "deepl-trans-selection":
+                if (info.selectionText)
+                    browser.tabs.create({
+                        url: `https://www.deepl.com/translator#auto/${targetLocale}/${encodeURIComponent(info.selectionText)}`,
+                        index: tab.index + 1
+                    });
+                break;
+            case "wiktionary-trans-word":
+                browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+                    const curTabIndex = tabs[0].index;
+                    browser.tabs.detectLanguage().then(langcode => {
+                        const language = (langs.where("1", langcode) || { name: "English" }).name;
+                        if (info.selectionText == undefined) return;
+                        browser.tabs.create({
+                            url: `https://${targetLocale}.wiktionary.org/w/index.php?search=${encodeURIComponent(info.selectionText)}#${encodeURIComponent(language)}`,
+                            index: curTabIndex + 1
+                        });
                     });
                 });
-            });
-            break;
-    }
+                break;
+        }
+    });
 }
 
 export default selectionLookup;

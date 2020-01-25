@@ -1,8 +1,8 @@
 import { wiktionaryQueryWordFormatted } from './wiktionary';
 
-async function handleWordLookup(word: string, locale: string) {
+async function handleWordLookup(word: string, sourceLocale: string) {
     try {
-        const definition = await wiktionaryQueryWordFormatted(word, locale);
+        const definition = await wiktionaryQueryWordFormatted(word, sourceLocale);
         return definition;
     }
     catch (error) {

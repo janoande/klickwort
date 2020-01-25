@@ -75,7 +75,6 @@ export default class CardCreator extends Component<CardCreatorProps, CardCreator
     }
 
     pushNote(cardData: CardMetaData): void {
-        console.log("Card to push:", cardData);
         browser.runtime.sendMessage({
             action: "create-anki-card",
             card: cardData

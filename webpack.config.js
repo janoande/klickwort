@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const src = path.resolve(__dirname, 'src');
 const dist = path.resolve(__dirname, 'dist');
@@ -6,7 +7,8 @@ const dist = path.resolve(__dirname, 'dist');
 const config = {
     entry: {
         content: path.join(src, 'content', 'content.tsx'),
-        background: path.join(src, 'background', 'background.ts')
+        background: path.join(src, 'background', 'background.ts'),
+        settings: path.join(src, 'settings', 'settings.tsx')
     },
     devtool: 'inline-source-map',
     module: {
@@ -19,7 +21,7 @@ const config = {
             { test: /\.css$/, use: [ 
                 { loader: "style-loader" },
                 { loader: "css-loader", options: { modules: true } },
-            ] }, 
+            ] }
         ],
     },
     resolve: {
@@ -30,8 +32,15 @@ const config = {
         path: dist
     },
     optimization: {
-        minimize: false
-    }
+        minimize: false,
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'settings.html',
+            template: path.join(src, 'settings', 'settings.html'),
+            inject: false
+        })
+    ]
 };
 
 module.exports = config;
