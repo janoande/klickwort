@@ -57,12 +57,20 @@ abstract class Anki {
         return fields;
     }
 
+    static toAnkiFields(fields: any) {
+        let ankiFields = {};
+        for (let i = 0; i < fields.length; i++) {
+            ankiFields = { [fields[i].name]: fields[i].value, ...ankiFields };
+        }
+        return ankiFields;
+    }
+
     static async pushCard(deckName: string, modelName: string, fields: string[], tags = []) {
         return Anki.query("addNote", {
             "note": {
                 "deckName": deckName,
                 "modelName": modelName,
-                "fields": fields,
+                "fields": this.toAnkiFields(fields),
                 "options": {
                     "allowDuplicates": false
                 },

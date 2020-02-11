@@ -1,7 +1,7 @@
 import { h, Component, createRef } from "preact";
 import WordDefinition from './WordDefinition';
 import CardCreator from './CardCreator';
-import { TemplateData } from './cardTemplate';
+import { TemplateData, ShouldExpandText } from './Card/cardTemplate';
 import css from './wordPopupStyle.css';
 
 type Position = {
@@ -208,7 +208,7 @@ export default class WordPopup extends Component {
                         updateDefinition={this.updateDefinition}
                         onCreateCard={this.showCreateCard} />
                     : null}
-                {state.createCardIsVisible ? <CardCreator templateData={this.getStateTemplateData(state)} /> : null}
+                {state.createCardIsVisible ? <CardCreator expand={ShouldExpandText.Yes} templateData={this.getStateTemplateData(state)} /> : null}
             </div>
         );
     }

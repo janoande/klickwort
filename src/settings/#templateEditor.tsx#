@@ -1,28 +1,31 @@
 import { h } from 'preact';
 
-import { Card, CardState, CardProps } from './Card/Card';
-import Fields from './Card/Fields';
-import Deck from './Card/Deck';
-import NoteType from './Card/NoteType';
-import { Field, insertFieldTemplates, ShouldExpandText } from './Card/cardTemplate';
+import { Card, CardState, CardProps } from '../content/wordPopup/Card/Card';
+import Fields from '../content/wordPopup/Card/Fields';
+import Deck from '../content/wordPopup/Card/Deck';
+import NoteType from '../content/wordPopup/Card/NoteType';
+import { saveTemplate } from '../content/wordPopup/Card/cardTemplate';
+import { Field, ShouldExpandText, insertFieldTemplates } from '../content/wordPopup/Card/cardTemplate';
 
-export default class CardCreator extends Card {
+export default class TemplateEditor extends Card {
 
     constructor(props: CardProps, _state: CardState) {
+        props.expand = ShouldExpandText.No;
         super(props);
     }
+
     onSubmit(e: Event): void {
         if (!e || !e.target) return;
         e.preventDefault();
         const data = this.collectFormData(e.target);
-        this.pushNote(data);
+        saveTemplate(data.noteType, data.fields);
     }
 
     changeNoteType(e: any) {
         const noteType = e.target.value;
 
         this.fetchNoteFields(noteType).then(fields => {
-            insertFieldTemplates(noteType, fields, this.props.templateData, ShouldExpandText.Yes).then((fields: Field[]): void => {
+            insertFieldTemplates(noteType, fields, this.props.templateData, ShouldExpandText.No).then((fields: Field[]): void => {
                 this.setState({
                     noteType: noteType,
                     fields: fields
@@ -34,11 +37,12 @@ export default class CardCreator extends Card {
     render(_props: CardProps, state: CardState) {
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
+                <h1> Template editor</h1 >
                 <Fields fields={state.fields} noteType={state.noteType} />
                 <Deck decks={state.decks} onInput={this.changeDeck} curDeck={state.deck} />
                 <NoteType models={state.modelNames} onInput={this.changeNoteType} curNoteType={state.noteType} />
-                <button type="submit">Send</button>
+                <button type="submit">Save template</button>
             </form>
         );
-    }
+    };
 }
