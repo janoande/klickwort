@@ -1,4 +1,5 @@
 import * as langs from 'langs';
+import getSetting from '../common/getSetting';
 
 // @ts-ignore
 browser.contextMenus.create({
@@ -24,8 +25,10 @@ browser.contextMenus.create({
 function selectionLookup(info: browser.menus.OnClickData, tab: browser.tabs.Tab) {
     if (typeof info.selectionText !== "string")
         return;
-    browser.storage.sync.get("targetLanguage").then(({ targetLanguage }) => {
-        const targetLocale = langs.where("name", targetLanguage as string)["1"];
+    getSetting("targetLanguage").then((targetLanguage) => {
+        if (typeof targetLanguage !== "string")
+            return;
+        const targetLocale = langs.where("name", targetLanguage)["1"];
         switch (info.menuItemId) {
             case "google-trans-selection":
                 if (info.selectionText)

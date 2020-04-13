@@ -3,6 +3,7 @@ import TemplateEditor from './templateEditor';
 import TargetLang from './targetLang';
 import * as langs from 'langs';
 import { ShouldExpandText } from '../content/wordPopup/Card/cardTemplate';
+import getSetting from '../common/getSetting';
 
 interface SettingsState {
     targetLanguage: string
@@ -20,7 +21,7 @@ export default class SettingsForm extends Component<any, SettingsState> {
         });
     };
     restoreSettings = (): void => {
-        browser.storage.sync.get("targetLanguage").then(({ targetLanguage }) => {
+        getSetting("targetLanguage").then((targetLanguage) => {
             this.setState({ targetLanguage: targetLanguage as string });
         });
     };
