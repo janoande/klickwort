@@ -15,7 +15,6 @@ export default class SettingsForm extends Component<any, SettingsState> {
         this.setState({ targetLanguage: language });
     };
     saveSettings = (): void => {
-        // @ts-ignore
         browser.storage.sync.set({
             targetLanguage: this.state.targetLanguage
         });
@@ -38,8 +37,8 @@ export default class SettingsForm extends Component<any, SettingsState> {
         return (
             <form onSubmit={this.saveSettings}>
                 <TargetLang onInput={this.onTargetLangChange} languages={langs.all()} curLang={state.targetLanguage} />
+                <button type="submit">Save target language</button>
                 <TemplateEditor expand={ShouldExpandText.No} templateData={templateData} />
-                <button type="submit">Save</button>
             </form>
         );
     }
