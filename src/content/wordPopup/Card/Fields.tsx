@@ -9,14 +9,9 @@ interface FieldsProps {
 export default class Fields extends Component<FieldsProps> {
     render(props: FieldsProps, _state: any) {
         return (
-            <Fragment>
-                <b>Fields:</b> <br />
-                <ul>
-                    {props.fields && props.fields.map((field: Field) =>
-                        <li><label>{field.name}:<textarea name={field.name}>{field.value}</textarea></label></li>
-                    )}
-                </ul>
-            </Fragment>
+            props.fields && props.fields.map((field: Field) =>
+                <Fragment><label>{field.name}:</label> <textarea name={field.name}>{field.value}</textarea></Fragment>
+            )
         );
     }
 }

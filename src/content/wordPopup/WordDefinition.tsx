@@ -1,4 +1,4 @@
-import { h, Component, createRef } from 'preact';
+import { h, Component, createRef, Fragment } from 'preact';
 import * as langs from 'langs';
 import css from './wordPopupStyle.css';
 
@@ -51,16 +51,22 @@ export default class WordDefinition extends Component<WordDefinitionProps, WordD
 
     render(props: WordDefinitionProps, _state: WordDefinitionState) {
         return (
-            <div>
+            <Fragment>
+                <div id={css.popupDictionaryWindowHeader}>
+                    <h4>{props.word}</h4>
+                    <button onClick={props.onCreateCard}>Ankify</button>
+                    <select value="en">
+                        <option value={props.locale}>{props.locale.toUpperCase()}</option>
+                    </select> {/* TODO: allow language selection to be changed */}
+                </div>
+                <hr />
                 <div id={css.popupDictionaryWindowText}>
-                    Definition for <b>{props.word}</b>: <br />
                     {props.spinning && <div id={css.popupDictSpinner}></div>}
                     <span ref={this.definitionTextRef}
                         dangerouslySetInnerHTML={{ __html: props.definition }}>
                     </span>
                 </div>
-                <button onClick={props.onCreateCard}>Create card</button>
-            </div>
+            </Fragment>
         );
     }
 }

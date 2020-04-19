@@ -37,7 +37,7 @@ export default class CardCreator extends Card {
                 <Fields fields={state.fields} noteType={state.noteType} />
                 <Deck decks={state.decks} onInput={this.changeDeck} curDeck={state.deck} />
                 <NoteType models={state.modelNames} onInput={this.changeNoteType} curNoteType={state.noteType} />
-                <button type="submit">Send</button>
+                <button type="submit">Create card!</button>
             </form>
         );
     }

@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 
 interface DeckProps {
     onInput: (e: any) => void,
@@ -9,12 +9,14 @@ interface DeckProps {
 export default class Deck extends Component<DeckProps> {
     render(props: DeckProps) {
         return (
-            <label>
+            <Fragment>
+            <label for="deck">
                 Deck:
-                    <select name="deck" onInput={props.onInput} value={props.curDeck}>
-                    {props.decks.map(deck => <option value={deck}>{deck}</option>)}
-                </select>
             </label>
+            <select name="deck" onInput={props.onInput} value={props.curDeck}>
+                {props.decks.map(deck => <option value={deck}>{deck}</option>)}
+            </select>
+            </Fragment>
         );
     }
 }
