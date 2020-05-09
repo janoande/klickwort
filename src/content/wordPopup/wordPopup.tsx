@@ -53,12 +53,9 @@ export default class WordPopup extends Component {
         position.y = (mouseY + offset);
 
         const clientWidth = document.documentElement.clientWidth;
-        const style = getComputedStyle(popupElement);
-        const widthRules = ["width", "paddingLeft", "paddingRight", "borderLeftWidth", "borderRightWidth"];
-        const popupWidth = widthRules.reduce((acc: number, cur: string) => {
-            // @ts-ignore
-            return acc + parseFloat(style[cur]);
-        }, 0);
+        popupElement.style.display = "block"; /* NOTE: offsetWidth = 0 if display = none */
+        const popupWidth = popupElement.offsetWidth;
+
         position.x = Math.max(Math.min((mouseX - popupWidth / 2), clientWidth - popupWidth), 0);
 
         this.setState({ position: position });
