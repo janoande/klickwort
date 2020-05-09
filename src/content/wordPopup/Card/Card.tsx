@@ -17,9 +17,9 @@ export interface CardState extends CardMetaData {
     decks: string[]
 }
 
-export abstract class Card extends Component<CardProps, CardState> {
+export abstract class Card<T extends CardProps> extends Component<T, CardState> {
     constructor(props: CardProps) {
-        super(props);
+        super();
         this.setState({
             deck: "Default",
             noteType: "Basic",
@@ -102,5 +102,5 @@ export abstract class Card extends Component<CardProps, CardState> {
 
     abstract onSubmit(e: Event): void;
 
-    abstract render(props: CardProps, state: CardState): ComponentChild;
+    abstract render(props: T, state: CardState): ComponentChild;
 }

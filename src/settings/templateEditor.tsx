@@ -7,7 +7,7 @@ import NoteType from '../content/wordPopup/Card/NoteType';
 import { saveTemplate } from '../content/wordPopup/Card/cardTemplate';
 import { Field, ShouldExpandText, insertFieldTemplates } from '../content/wordPopup/Card/cardTemplate';
 
-export default class TemplateEditor extends Card {
+export default class TemplateEditor extends Card<CardProps> {
 
     constructor(props: CardProps, _state: CardState) {
         super(props);

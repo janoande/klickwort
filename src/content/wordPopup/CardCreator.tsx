@@ -1,4 +1,5 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
+import css from './wordPopupStyle.css';
 
 import { Card, CardState, CardProps } from './Card/Card';
 import Fields from './Card/Fields';
@@ -6,9 +7,13 @@ import Deck from './Card/Deck';
 import NoteType from './Card/NoteType';
 import { Field, insertFieldTemplates, ShouldExpandText } from './Card/cardTemplate';
 
-export default class CardCreator extends Card {
+interface CardCreatorProps extends CardProps {
+    onGoBack: () => void
+}
 
-    constructor(props: CardProps, _state: CardState) {
+export default class CardCreator extends Card<CardCreatorProps> {
+
+    constructor(props: CardCreatorProps, _state: CardState) {
         super(props);
     }
     onSubmit(e: Event): void {
@@ -31,14 +36,20 @@ export default class CardCreator extends Card {
         });
     }
 
-    render(_props: CardProps, state: CardState) {
+    render(props: CardCreatorProps, state: CardState) {
         return (
-            <form onSubmit={this.onSubmit.bind(this)}>
-                <Fields fields={state.fields} noteType={state.noteType} />
-                <Deck decks={state.decks} onInput={this.changeDeck} curDeck={state.deck} />
-                <NoteType models={state.modelNames} onInput={this.changeNoteType} curNoteType={state.noteType} />
-                <button type="submit">Create card!</button>
-            </form>
+            <Fragment>
+                <div id={css.popupDictionaryWindowHeader}>
+                    <h4>Create New Card</h4>
+                    <button onClick={props.onGoBack}>Back to definition</button>
+                </div>
+                <form onSubmit={this.onSubmit.bind(this)}>
+                    <Fields fields={state.fields} noteType={state.noteType} />
+                    <Deck decks={state.decks} onInput={this.changeDeck} curDeck={state.deck} />
+                    <NoteType models={state.modelNames} onInput={this.changeNoteType} curNoteType={state.noteType} />
+                    <button type="submit">Create card!</button>
+                </form>
+            </Fragment>
         );
     }
 }

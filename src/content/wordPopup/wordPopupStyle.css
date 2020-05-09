@@ -61,6 +61,10 @@
 #popupDictionaryWindowText {
     display: inline;
 }
+#popupDictionaryWindowHeader {
+    border-bottom: 1px solid #999;
+    margin-bottom: 10px;
+}
 #popupDictionaryWindowHeader * {
     display: inline-block;
     padding: 0;

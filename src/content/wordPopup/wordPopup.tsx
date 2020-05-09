@@ -188,6 +188,13 @@ export default class WordPopup extends Component {
         });
     };
 
+    showDefinition = () => {
+        this.setState({
+            createCardIsVisible: false,
+            wordDefinitionIsVisible: true
+        });
+    };
+
     render(_props: any, state: WordPopupState) {
         const style = {
             top: state.position.y + "px",
@@ -205,7 +212,11 @@ export default class WordPopup extends Component {
                         updateDefinition={this.updateDefinition}
                         onCreateCard={this.showCreateCard} />
                     : null}
-                {state.createCardIsVisible ? <CardCreator expand={ShouldExpandText.Yes} templateData={this.getStateTemplateData(state)} /> : null}
+                {state.createCardIsVisible ?
+                    <CardCreator expand={ShouldExpandText.Yes}
+                        templateData={this.getStateTemplateData(state)}
+                        onGoBack={this.showDefinition} />
+                    : null}
             </div>
         );
     }

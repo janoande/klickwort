@@ -59,7 +59,6 @@ export default class WordDefinition extends Component<WordDefinitionProps, WordD
                         <option value={props.locale}>{props.locale.toUpperCase()}</option>
                     </select> {/* TODO: allow language selection to be changed */}
                 </div>
-                <hr />
                 <div id={css.popupDictionaryWindowText}>
                     {props.spinning && <div id={css.popupDictSpinner}></div>}
                     <span ref={this.definitionTextRef}
