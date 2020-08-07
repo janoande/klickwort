@@ -30,6 +30,11 @@
     -moz-appearance: button;
     -webkit-appearance: button;
 }
+#popupDictionaryWindow button:hover,
+#popupDictionaryWindow select:hover {
+    background-color: #4095c6;
+    cursor: pointer;
+}
 #popupDictionaryWindow form {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -53,10 +58,6 @@
 }
 #popupDictionaryWindow label {
     grid-column: 1 / 2;
-}
-#popupDictionaryWindow button:hover{
-    background-color: #4095c6;
-    cursor: pointer;
 }
 #popupDictionaryWindowText {
     display: inline;
