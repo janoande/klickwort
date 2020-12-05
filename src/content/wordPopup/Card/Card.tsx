@@ -87,9 +87,10 @@ export abstract class Card<T extends CardProps> extends Component<T, CardState> 
     collectFormData(form: EventTarget): CardMetaData {
         let formData: CardMetaData = { deck: "", noteType: "", fields: [] };
         // @ts-ignore
-        Array.from(form).forEach(input => {
+        Array.from(form).forEach((input: HTMLInputElement) => {
             if (input.tagName == "SELECT") {
-                const selectDataName: "deck" | "noteType" = input.name;
+                const selectDataName: string = input.name;
+                // @ts-ignore
                 formData[selectDataName] = input.value;
             }
             else if (input.tagName == "TEXTAREA") {

@@ -10,7 +10,10 @@ export default class Fields extends Component<FieldsProps> {
     render(props: FieldsProps, _state: any) {
         return (
             props.fields && props.fields.map((field: Field) =>
-                <Fragment><label>{field.name}:</label> <textarea name={field.name}>{field.value}</textarea></Fragment>
+                <Fragment>
+                    <label>{field.name}:</label>
+                    <div contentEditable={true} name={field.name} dangerouslySetInnerHTML={{ __html: field.value }} />
+                </Fragment>
             )
         );
     }

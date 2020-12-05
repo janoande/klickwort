@@ -46,14 +46,14 @@
 #popupDictionaryWindow form fieldset {
     grid-column: 1 / 3;
 }
-#popupDictionaryWindow form textarea {
+#popupDictionaryWindow div[contenteditable="true"] {
     background: white;
     color: black;
     border: solid 1px #999;
     border-radius: 4px;
     padding: 4px;
 }
-#popupDictionaryWindow textarea:focus {
+#popupDictionaryWindow div[contenteditable="true"]:focus {
     border: solid 1px black;
 }
 #popupDictionaryWindow label {
